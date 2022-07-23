@@ -6,6 +6,8 @@ Author : Zilu Meng
 
 e-mail : mzll1202@163.com
 
+version: 0.0.6
+
 ## Why choose Sacpy?
 
 ### Quick!
@@ -91,11 +93,11 @@ Result(For a detailed drawing process, see **example**):
 
 ## Speed 
 
-As a comparison, we use the function **corr**  function in the xarray library and **for-loop**. The time required to calculate the correlation coefficient between SSTA and nino3.4 for 50 times is shown in the figure below.
+As a comparison, we use the  **corr**  function in the xarray library, **corrcoef** function in numpy library and **for-loop**. The time required to calculate the correlation coefficient between SSTA and nino3.4 for 50 times is shown in the figure below.
 
-It can be seen that we are five times faster than xarray and 60 times faster than forloop.
+It can be seen that we are five times faster than xarray.corr, 60 times faster than forloop and 200 times faster than numpy.corrcoef.
 
-Moreover, xarray will not return the **p value**. We can simply check the pvalue attribute of sacpy to get the p value.
+Moreover, xarray and numpy can not return the **p value**. We can simply check the pvalue attribute of sacpy to get the p value.
 
 ![](https://raw.githubusercontent.com/ZiluM/sacpy/master/pic/speed_test_00.png)
 
