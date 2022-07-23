@@ -8,9 +8,9 @@ setup.py
 
 /.idea
 
-/scapy/__pycache__/
+/sacpy/__pycache__/
 
-/scapy/example/__pycache__/
+/sacpy/example/__pycache__/
 
 /build
 
