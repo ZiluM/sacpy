@@ -52,7 +52,7 @@ plt.savefig("./nino34.png")
 ```
 Result(For a detailed drawing process, see **example**):
 
-![](./pic/nino34.png)
+![](https://raw.githubusercontent.com/ZiluM/sacpy/master/pic/nino34.png)
 
 ### example2
 
@@ -87,7 +87,7 @@ plt.savefig("../pic/MLR.png")
 ```
 Result(For a detailed drawing process, see **example**):
 
-![](./pic/MLR.png)
+![](https://raw.githubusercontent.com/ZiluM/sacpy/master/pic/MLR.png)
 
 ## Speed 
 
@@ -97,7 +97,9 @@ It can be seen that we are five times faster than xarray and 60 times faster tha
 
 Moreover, xarray will not return the **p value**. We can simply check the pvalue attribute of sacpy to get the p value.
 
-![](./pic/speed_test.png)
+<!-- ![](./pic/speed_test.png) -->
+[](https://raw.githubusercontent.com/ZiluM/sacpy/master/pic/speed_test.png)
+
 
 ## Acknowledgements
 
