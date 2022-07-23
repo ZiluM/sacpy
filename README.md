@@ -27,7 +27,7 @@ Compatible with commonly used meteorological calculation libraries such as numpy
 
 ## Install
 
-
+You can use pip to install.
 
         pip install sacpy
 
