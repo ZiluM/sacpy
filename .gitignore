@@ -7,3 +7,7 @@
 setup.py
 
 /.idea
+
+/scapy/__pycache__/
+
+/scapy/example/__pycache__/
