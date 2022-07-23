@@ -101,6 +101,8 @@ It can be seen that we are five times faster than xarray.corr, 60 times faster t
 
 Moreover, xarray and numpy can not return the **p value**. We can simply check the pvalue attribute of sacpy to get the p value.
 
+All in all, if we want to get p-value and correlation or slope, Sacpy is 60 times faster than before.
+
 ![](https://raw.githubusercontent.com/ZiluM/sacpy/master/pic/speed_test_00.png)
 
 
