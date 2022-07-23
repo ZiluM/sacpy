@@ -10,7 +10,7 @@ e-mail : mzll1202@163.com
 
 ### Quick!
 
-For example, Sacpy is more than 40 times faster than the traditional regression analysis with Python (see example 1).
+For example, Sacpy is more than 60 times faster than the traditional regression analysis with Python (see **speed test**).
 
 ### Turn to climate data customization!
 
@@ -97,8 +97,8 @@ It can be seen that we are five times faster than xarray and 60 times faster tha
 
 Moreover, xarray will not return the **p value**. We can simply check the pvalue attribute of sacpy to get the p value.
 
-<!-- ![](./pic/speed_test.png) -->
-[](https://raw.githubusercontent.com/ZiluM/sacpy/master/pic/speed_test.png)
+![](https://raw.githubusercontent.com/ZiluM/sacpy/master/pic/speed_test_00.png)
+
 
 
 ## Acknowledgements
