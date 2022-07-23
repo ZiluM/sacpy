@@ -64,7 +64,7 @@ Result(For a detailed drawing process, see **example**):
 
 ### example2
 
-multiple linear regression on Nino3.4 IODIdex and ssta pattern
+multiple linear regression on Nino3.4 IOD Index and ssta pattern
 
 ```Python
 import numpy as np
