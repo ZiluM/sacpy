@@ -11,3 +11,6 @@ setup.py
 /scapy/__pycache__/
 
 /scapy/example/__pycache__/
+
+/build
+

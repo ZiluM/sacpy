@@ -24,11 +24,15 @@ Compatible with commonly used meteorological calculation libraries such as numpy
 
 ## Example
 
+### example1
 Calculate the correlation between SST and nino3.4 index
 
 ```Python
 import numpy as np
 import scapy as scp
+import matplotlib.pyplot as plt
+
+
 # load sst
 sst = scp.load_sst()['sst']
 # get ssta (method=1, Remove linear trend;method=0, Minus multi-year average)
@@ -50,6 +54,52 @@ Result(For a detailed drawing process, see **example**):
 
 ![](./pic/nino34.png)
 
-### Speed 
+### example2
 
-As example, if we use conventional for-loop to finish it, it will take 40 times more time (see **example**).
+multiple linear regression on Nino3.4 IODIdex and ssta pattern
+
+```Python
+import numpy as np
+import scapy as scp
+import matplotlib.pyplot as plt
+
+
+# load sst
+sst = scp.load_sst()['sst']
+# get ssta (method=1, Remove linear trend;method=0, Minus multi-year average)
+ssta = scp.get_anom(sst,method=1)
+# calculate Nino3.4
+Nino34 = ssta.loc[:,-5:5,190:240].mean(axis=(1,2))
+# calculate IODIdex
+IODW = ssta.loc[:,-10:10,50:70].mean(axis=(1,2))
+IODE = ssta.loc[:,-10:0,90:110].mean(axis=(1,2))
+IODI = +IODW - IODE
+# get x
+X = np.vstack([np.array(Nino34),np.array(IODI)]).T
+# multiple linear regression
+MLR = scp.MultLinReg(X,np.array(ssta))
+# plot IOD's effect
+plt.contourf(MLR.slope[1])
+# Significance test
+plt.contourf(MLR.pv_i[1],levels=[0, 0.1, 1],zorder=1,
+            hatches=['..', None],colors="None",)
+plt.savefig("../pic/MLR.png")
+```
+Result(For a detailed drawing process, see **example**):
+
+![](./pic/MLR.png)
+
+## Speed 
+
+As a comparison, we use the function **corr**  function in the xarray library and **for-loop**. The time required to calculate the correlation coefficient between SSTA and nino3.4 for 50 times is shown in the figure below.
+
+It can be seen that we are five times faster than xarray and 60 times faster than forloop.
+
+Moreover, xarray will not return the **p value**. We can simply check the pvalue attribute of sacpy to get the p value.
+
+![](./pic/speed_test.png)
+
+## Acknowledgements
+
+
+Thank Prof. Feng Zhu (NUIST,https://github.com/fzhu2e) for his guidance of this project

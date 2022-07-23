@@ -104,12 +104,12 @@ def multi_linreg(x: np.ndarray, y: np.ndarray):
     # F value of total regression equation
     F = U / Numf / (Q / (Num0 - Numf - 1))
     # F value of Infactor
-    C_mx = np.diagonal(np.linalg.inv(covar_xx))
+    C_mx = np.diagonal(np.linalg.inv(covar_xx*Num0))
     Q_mx = slope ** 2 / C_mx[..., np.newaxis]  # (Numf,Num space)
     F_i = Q_mx / (Q / (Num0 - Numf - 1))  # (Numf,Num space)
     # p value
-    pv_all = 1 - sts.f.cdf(F, Num0 - Numf - 1, Num0)  # (Num space)
-    pv_i = 1 - sts.f.cdf(F_i, Num0 - Numf - 1, 1)  # (Numf,Num space)
+    pv_all = 1 - sts.f.cdf(F,  Num0,Num0 - Numf - 1)  # (Num space)
+    pv_i = 1 - sts.f.cdf(F_i, 1, Num0 - Numf - 1)  # (Numf,Num space)
     # reshape
     pv_all, R, intcpt = list(map(lambda inar: inar.reshape(org_sp_Y[1:]), [pv_all, R, intcpt]))
     slope, pv_i = list(map(lambda inar: inar.reshape([Numf, *org_sp_Y[1:]]), [slope, pv_i]))
