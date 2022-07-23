@@ -8,7 +8,11 @@ e-mail : mzll1202@163.com
 
 github : https://github.com/ZiluM/sacpy
 
-version : 0.0.7
+gitee : https://gitee.com/zilum/sacpy
+
+examples or document :  https://github.com/ZiluM/sacpy/tree/master/examples or https://gitee.com/zilum/sacpy/tree/master/examples
+
+version : 0.0.8
 
 ## Why choose Sacpy?
 
