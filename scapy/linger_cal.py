@@ -1,7 +1,7 @@
 import numpy as np
 import scipy.stats as sts
 
-
+EPS = 1e-5
 def linear_reg(x: np.ndarray, y: np.ndarray):
     """ Simple linear regression y[idx] = slope[idx] * x + intcp[idx]
     Args:
@@ -40,7 +40,7 @@ def linear_reg(x: np.ndarray, y: np.ndarray):
     # cal intcpt
     intcpt = y_rs.mean(axis=0) - slope * x.mean(axis=0)
     # cal t-valpue
-    t = corr / np.sqrt(1 - corr ** 2) * np.sqrt(Num0 - 2)
+    t = corr / (np.sqrt(1 - corr ** 2) + EPS) * np.sqrt(Num0 - 2)
     p_value = sts.t.sf(t, df=Num0 - 2)
     # transform t value
     pv_cp = np.copy(p_value)
