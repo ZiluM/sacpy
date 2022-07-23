@@ -1,0 +1,9 @@
+# ignore /dist
+
+/dist
+
+/sacpy.egg-info
+
+setup.py
+
+/.idea
