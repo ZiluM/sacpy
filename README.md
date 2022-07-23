@@ -27,7 +27,21 @@ Compatible with commonly used meteorological calculation libraries such as numpy
 
 ## Install
 
+
+
         pip install sacpy
+
+## Speed 
+
+As a comparison, we use the  **corr**  function in the xarray library, **corrcoef** function in numpy library, cdist in scipy, apply_func in xarray  and **for-loop**. The time required to calculate the correlation coefficient between SSTA and nino3.4 for 50 times is shown in the figure below.
+
+It can be seen that we are four times faster than scipy cdist, five times faster than xarray.corr, 60 times faster than forloop, 110 times faster than xr.apply_func and 200 times faster than numpy.corrcoef.
+
+Moreover, xarray and numpy can not return the **p value**. We can simply check the pvalue attribute of sacpy to get the p value.
+
+All in all, if we want to get p-value and correlation or slope, we only to choose **Sacpy is 60 times faster than before**.
+
+![](https://raw.githubusercontent.com/ZiluM/sacpy/master/pic/speed_test_00.png)
 
 
 ## Example
@@ -96,18 +110,6 @@ plt.savefig("../pic/MLR.png")
 Result(For a detailed drawing process, see **example**):
 
 ![](https://raw.githubusercontent.com/ZiluM/sacpy/master/pic/MLR.png)
-
-## Speed 
-
-As a comparison, we use the  **corr**  function in the xarray library, **corrcoef** function in numpy library, cdist in scipy, apply_func in xarray  and **for-loop**. The time required to calculate the correlation coefficient between SSTA and nino3.4 for 50 times is shown in the figure below.
-
-It can be seen that we are four times faster than scipy cdist, five times faster than xarray.corr, 60 times faster than forloop, 110 times faster than xr.apply_func and 200 times faster than numpy.corrcoef.
-
-Moreover, xarray and numpy can not return the **p value**. We can simply check the pvalue attribute of sacpy to get the p value.
-
-All in all, if we want to get p-value and correlation or slope, we only to choose **Sacpy is 60 times faster than before**.
-
-![](https://raw.githubusercontent.com/ZiluM/sacpy/master/pic/speed_test_00.png)
 
 
 
