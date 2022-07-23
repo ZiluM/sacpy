@@ -12,3 +12,7 @@ First official edition
 
 Updated the speed test and changed small errors
 
+## version 0.0.7
+
+Add examples and change README.md
+

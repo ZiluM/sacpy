@@ -6,7 +6,9 @@ Author : Zilu Meng
 
 e-mail : mzll1202@163.com
 
-version: 0.0.6
+github : https://github.com/ZiluM/sacpy
+
+version : 0.0.7
 
 ## Why choose Sacpy?
 
