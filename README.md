@@ -117,6 +117,40 @@ Result(For a detailed drawing process, see **example**):
 
 ![](https://raw.githubusercontent.com/ZiluM/sacpy/master/pic/MLR.png)
 
+### example3
+
+What effect will ENSO have on the sea surface temperature in the next summer?
+
+```Python
+import numpy as np
+import sacpy as scp
+import matplotlib.pyplot as plt
+import xarray as xr
+
+# load sst
+sst = scp.load_sst()['sst']
+ssta = scp.get_anom(sst)
+
+# calculate Nino3.4
+Nino34 = ssta.loc[:,-5:5,190:240].mean(axis=(1,2))
+
+# get DJF mean Nino3.4
+DJF_nino34 = scp.XrTools.spec_moth_yrmean(Nino34,[12,1,2])
+
+# get JJA mean ssta
+JJA_ssta = scp.XrTools.spec_moth_yrmean(ssta, [6,7,8])
+
+# regression
+reg = scp.LinReg(np.array(DJF_nino34)[:-1], np.array(JJA_ssta))
+# plot
+plt.contourf(reg.corr)
+# Significance test
+plt.contourf(reg.p_value,levels=[0, 0.05, 1],zorder=1,
+            hatches=['..', None],colors="None",)
+# save
+plt.savefig("./ENSO_Next_year_JJA.png",dpi=300)
+```
+
 
 
 ## Acknowledgements
