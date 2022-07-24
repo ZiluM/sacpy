@@ -33,6 +33,10 @@ You can use pip to install.
 
         pip install sacpy
 
+Or you can visit https://gitee.com/zilum/sacpy/tree/master/dist to download **.whl file**, then
+
+        pip install .whl_file
+
 ## Speed 
 
 As a comparison, we use the  **corr**  function in the xarray library, **corrcoef** function in numpy library, cdist in scipy, apply_func in xarray  and **for-loop**. The time required to calculate the correlation coefficient between SSTA and nino3.4 for 50 times is shown in the figure below.
