@@ -10,9 +10,11 @@ github : https://github.com/ZiluM/sacpy
 
 gitee : https://gitee.com/zilum/sacpy
 
+pipy : https://pypi.org/project/sacpy/
+
 examples or document :  https://github.com/ZiluM/sacpy/tree/master/examples or https://gitee.com/zilum/sacpy/tree/master/examples
 
-version : 0.0.8
+version : 0.0.9
 
 ## Why choose Sacpy?
 
