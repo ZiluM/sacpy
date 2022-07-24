@@ -151,6 +151,9 @@ plt.contourf(reg.p_value,levels=[0, 0.05, 1],zorder=1,
 plt.savefig("./ENSO_Next_year_JJA.png",dpi=300)
 ```
 
+![](https://raw.githubusercontent.com/ZiluM/sacpy/master/pic/ENSO_Next_year_JJA.png)
+
+Same as **Indian Ocean Capacitor Effect on Indo–Western Pacific Climate during the Summer following El Niño** (Xie et al.), the El Nino will lead to Indian ocean warming in next year JJA.
 
 
 ## Acknowledgements
