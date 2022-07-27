@@ -22,3 +22,7 @@ Add mult_corr,partial_corr in LinReg.py and spec_moth_dat, spec_moth_yrmean in X
 
 Change examples.
 
+## version 0.0.10
+
+
+
