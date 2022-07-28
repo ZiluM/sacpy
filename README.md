@@ -155,6 +155,42 @@ plt.savefig("./ENSO_Next_year_JJA.png",dpi=300)
 
 Same as **Indian Ocean Capacitor Effect on Indo–Western Pacific Climate during the Summer following El Niño** (Xie et al.), the El Nino will lead to Indian ocean warming in next year JJA.
 
+### example4
+
+EOF analysis
+
+```Python
+import sacpy as scp
+import numpy as np
+import matplotlib.pyplot as plt
+# get data
+sst = scp.load_sst()["sst"].loc[:, -20:30, 150:275]
+ssta = scp.get_anom(sst)
+# EOF
+eof = scp.EOF(np.array(ssta))
+eof.solve()
+# get spartial pattern and pc
+pc = eof.get_pc(npt=2)
+pt = eof.get_pt(npt=2)
+# plot
+plt.figure(figsize=[12,10])
+plt.subplot(221)
+plt.contourf(pt[0,:,:])
+plt.colorbar()
+plt.subplot(222)
+plt.plot(sst.time,pc[0])
+plt.subplot(223)
+plt.contourf(pt[1,:,:])
+plt.colorbar()
+plt.subplot(224)
+plt.plot(sst.time,pc[1])
+plt.savefig("../pic/eof_ana.png",dpi=300)
+```
+
+![](https://raw.githubusercontent.com/ZiluM/sacpy/master/pic/eof_ana.png)
+
+
+
 
 ## Acknowledgements
 
