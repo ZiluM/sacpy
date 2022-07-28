@@ -3,6 +3,8 @@ from .LinReg import LinReg, MultLinReg
 from .XrTools import get_anom
 from .UT import convert_lon, reverse_lon
 from .load_sst import load_sst
+from .EOF import EOF
+
 
 
 

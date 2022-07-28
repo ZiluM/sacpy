@@ -24,6 +24,6 @@ Change examples.
 
 ## version 0.0.10
 
-Null
+Add EOF analysis
 
 
