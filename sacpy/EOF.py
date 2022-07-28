@@ -119,8 +119,9 @@ class EOF():
             npt = self.dim_min
         pc = self.e_vector[:npt] @ self.data_nN.T  # (pattern_num, time)
         # self.pc = pc
+        self.pc_std = pc[:npt].std(axis=1)[..., np.newaxis]
         if scaling == "std":
-            pc_re = pc[:npt] / pc[:npt].std(axis=1)[..., np.newaxis]
+            pc_re = pc[:npt] / self.pc_std
         else:
             pc_re = pc
         self.pc = pc_re
@@ -141,7 +142,7 @@ class EOF():
         if self.pc is None or self.got_pc_num < npt:
             self.get_pc(npt=npt)
         if scaling == "mstd":
-            patterns = self.patterns[:npt] * self.pc.std(axis=1)[..., np.newaxis][:npt]
+            patterns = self.patterns[:npt] * self.pc_std[:npt]
         else:
             patterns = self.patterns[:npt]
         # reshape to original shape (pattern_num,*space)
