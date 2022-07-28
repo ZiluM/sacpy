@@ -14,7 +14,7 @@ pypi : https://pypi.org/project/sacpy/
 
 examples or document :  https://github.com/ZiluM/sacpy/tree/master/examples or https://gitee.com/zilum/sacpy/tree/master/examples
 
-version : 0.0.9
+version : 0.0.10
 
 ## Why choose Sacpy?
 
