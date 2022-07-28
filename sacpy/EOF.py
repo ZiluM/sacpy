@@ -8,19 +8,26 @@ class EOF():
     """ EOF analysis of data
     """
 
-    def __init__(self, data: np.ndarray):
+    def __init__(self, data: np.ndarray, weights=None):
         """ initiation of EOF
         Args:
             data (np.ndarray): shape (time, * space grid number)
+            weights : shape (* space grid number , 
+                        or can be broadcast to space grid number)
         """
         # orginal data
-        self.data = data
+        if weights is None:
+            self.data = np.copy(data)
+        else:
+            self.data = np.copy(data) * weights
         # original data shape
         self.origin_shape = data.shape
         # time length
         self.tLen = data.shape[0]
         # reshape (time, space)
         self.rsp_data = data.reshape(self.tLen, -1)
+        self.pc = None
+        self.got_pc_num = 0
 
     def _mask_nan(self):
         """ mask Nan or drop out the Nan
@@ -70,9 +77,8 @@ class EOF():
             eign, e_vector_s = np.linalg.eig(cov)  # (dim_min) ; (dim_min , dim_min) [i]&[:,i]
             # trans
             e_vector = (data_nN.T @ e_vector_s / np.sqrt(np.abs(eign))).T[:dim_min]
+
         # save
-        pc = e_vector @ data_nN.T  # (pattern_num, time)
-        self.pc = pc  # time pc (pattern_num, time)
         self.e_vector = e_vector
         self.eign = eign
         self.dim_min = dim_min
@@ -85,36 +91,64 @@ class EOF():
         # save
         self.patterns = patterns
 
-    def get_pc(self, scaling="std"):
+    def get_varperc(self, npt=None):
+        """ return variance percential
+
+        Args:
+            npt (int, optional): n patterns to get. Defaults to None.
+
+        Returns:
+            variace percentile (np.ndarray): variance percentile (npt,)
+        """
+        if npt is None:
+            npt = self.dim_min
+        var_perc = self.eign[:npt] / np.sum(self.eign)
+        return var_perc
+
+    def get_pc(self, scaling="std", npt=None):
         """ get pc of eof analysis
 
         Args:
             scaling (str, optional): scale method. Defaults to "std".
 
         Returns:
-            pc_re : pc of eof
+            pc_re : pc of eof (pattern_num, time)
         """
+
+        if npt is None:
+            npt = self.dim_min
+        pc = self.e_vector[:npt] @ self.data_nN.T  # (pattern_num, time)
+        # self.pc = pc
         if scaling == "std":
-            pc_re = self.pc / self.pc.std(axis=1)[..., np.newaxis]
-            print(self.pc.std(axis=1).shape)
+            pc_re = pc[:npt] / pc[:npt].std(axis=1)[..., np.newaxis]
+        else:
+            pc_re = pc
+        self.pc = pc_re
+        self.got_pc_num = npt
         return pc_re
 
-    def get_pt(self, scaling="mstd"):
+    def get_pt(self, scaling="mstd", npt=None):
         """ get spatial patterns of EOF analysis
 
         Args:
             scaling (str, optional): sacling method. Defaults to "mstd".
 
         Returns:
-            _type_: _description_
+            patterns : (pattern_num, * space grid number)
         """
+        if npt is None:
+            npt = self.dim_min
+        if self.pc is None or self.got_pc_num < npt:
+            self.get_pc(npt=npt)
         if scaling == "mstd":
-            patterns = self.patterns * self.pc.std(axis=1)[..., np.newaxis]
+            patterns = self.patterns[:npt] * self.pc.std(axis=1)[..., np.newaxis][:npt]
+        else:
+            patterns = self.patterns[:npt]
         # reshape to original shape (pattern_num,*space)
-        patterns = patterns.reshape((self.dim_min, *self.origin_shape[1:]))
+        patterns = patterns.reshape((npt, *self.origin_shape[1:]))
         return patterns
 
-    def projection(self, proj_field: np.ndarray, scaling="std"):
+    def projection(self, proj_field: np.ndarray, npt=None, scaling="std"):
         """ project new field to EOF spatial pattern
 
         Args:
@@ -124,8 +158,12 @@ class EOF():
         Returns:
             pc_proj : _description_
         """
+        if npt is None:
+            npt = self.dim_min
         proj_field_noNan = proj_field.reshape(proj_field.shape[0], -1)[:, self.flag]
         pc_proj = self.e_vector @ proj_field_noNan.T
+        if self.pc is None or self.got_pc_num < npt:
+            self.get_pc(npt)
         if scaling == "std":
             pc_proj = pc_proj / self.pc.std(axis=1)[..., np.newaxis]
         return pc_proj
@@ -156,5 +194,5 @@ class EOF():
 
         corr = norm_evctor @ data_noNan_norm.T / (N + 2)  # npatterns,data_time
         t_value = np.abs(corr / (EPS + np.sqrt(1 - corr**2)) * np.sqrt(N))
-        p_value = sts.t.sf(t_value, df=N - 2) *2
+        p_value = sts.t.sf(t_value, df=N - 2) * 2
         return corr, p_value
