@@ -24,7 +24,7 @@ def linear_reg(x: np.ndarray, y: np.ndarray):
     org_sp_Y = y.shape
     # no equal, raise error
     if Num0 != Num1:
-        raise (ValueError("x.shape[0] no equal to y.shape[0] , dim0 is wrong"))
+        raise (TypeError("x.shape[0] no equal to y.shape[0] , dim0 is wrong"))
     # reshape y to (time,number)
     y_rs = y.reshape(Num1, -1)
     # cal anomaly

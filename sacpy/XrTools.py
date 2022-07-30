@@ -90,7 +90,8 @@ def spec_moth_yrmean(DaArray: xr.DataArray, months: list):
     # get month[-1]
     month_end = time.dt.month[-1].item()
     # get cycle data (cycle is period in months)
-    ed_idx = -(len(months) - months.index(month_end) - 1)
+    # ed_idx = -(len(months) - months.index(month_end) - 1)
+    ed_idx = -((+months.index(month_end) + 1) % len(months))
     ed_idx = None if ed_idx == 0 else ed_idx
     st_idx = len(months) - months.index(month_start)
     smd_cyc = smd[st_idx:ed_idx]

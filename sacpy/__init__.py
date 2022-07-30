@@ -1,6 +1,6 @@
 from .version import __version__
 from .LinReg import LinReg, MultLinReg
-from .XrTools import get_anom
+from .XrTools import get_anom,spec_moth_dat,spec_moth_yrmean
 from .UT import convert_lon, reverse_lon
 from .load_sst import load_sst
 from .EOF import EOF
