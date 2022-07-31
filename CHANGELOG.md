@@ -30,4 +30,8 @@ Add EOF analysis
 
 Change Example Data
 
+## version 0.0.12 
+
+Fix a bug in XrTools 
+
 
