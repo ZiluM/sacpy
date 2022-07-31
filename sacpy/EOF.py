@@ -4,7 +4,7 @@ import scipy.stats as sts
 EPS = 1e-5
 
 
-class EOF():
+class EOF:
     """ EOF analysis of data
     """
 
@@ -15,7 +15,7 @@ class EOF():
             weights : shape (* space grid number , 
                         or can be broadcast to space grid number)
         """
-        # orginal data
+        # original data
         if weights is None:
             self.data = np.copy(data)
         else:
@@ -188,12 +188,12 @@ class EOF():
         # free degree
         N = need_evctor.shape[1] - 2
         # normalize data
-        norm_evctor = (need_evctor - need_evctor.mean(axis=1)[..., np.newaxis])/ \
-                    (need_evctor.std(axis=1)[..., np.newaxis])
-        data_noNan_norm = (data_noNan - data_noNan.mean(axis=1)[..., np.newaxis])/ \
-                    (data_noNan.std(axis=1)[..., np.newaxis])
+        norm_evctor = (need_evctor - need_evctor.mean(axis=1)[..., np.newaxis]) / \
+                      (need_evctor.std(axis=1)[..., np.newaxis])
+        data_noNan_norm = (data_noNan - data_noNan.mean(axis=1)[..., np.newaxis]) / \
+                          (data_noNan.std(axis=1)[..., np.newaxis])
 
         corr = norm_evctor @ data_noNan_norm.T / (N + 2)  # npatterns,data_time
-        t_value = np.abs(corr / (EPS + np.sqrt(1 - corr**2)) * np.sqrt(N))
+        t_value = np.abs(corr / (EPS + np.sqrt(1 - corr ** 2)) * np.sqrt(N))
         p_value = sts.t.sf(t_value, df=N - 2) * 2
         return corr, p_value

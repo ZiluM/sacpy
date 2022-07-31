@@ -21,12 +21,13 @@ def get_levels(data, percentile: int, num_level: int, zero_sym: bool) -> np.ndar
         levels = np.linspace(_min, _max, num_level)
     return levels
 
-def _store_range(self,x,y):
-    if not hasattr(self,"xrange"):
+
+def _store_range(self, x, y):
+    if not hasattr(self, "xrange"):
         self.xrange = [x]
     else:
         self.xrange.append(x)
-    if not hasattr(self,"yrange"):
+    if not hasattr(self, "yrange"):
         self.yrange = [y]
     else:
         self.append(y)
@@ -114,13 +115,8 @@ def _contour(self, *args, **kwargs):
 
 
 def _sig_ctrf(self, x, y, pvalue, thrshd=0.05, marker=".."):
-    res = self.contourf(x,
-                        y,
-                        pvalue,
-                        levels=[0, thrshd, 1],
-                        zorder=1,
-                        hatches=[marker, None],
-                        colors="None",
+    res = self.contourf(x, y, pvalue, levels=[0, thrshd, 1], zorder=1,
+                        hatches=[marker, None], colors="None",
                         transform=ccrs.PlateCarree())
     return res
 
