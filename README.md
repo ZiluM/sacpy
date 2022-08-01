@@ -28,7 +28,7 @@ Compatible with commonly used meteorological calculation libraries such as numpy
 
 ### Concise code
 
-You can complete the drawing with just seven lines of code. see examples of concise.
+You can complete the drawing with just seven lines of code. see **examples of concise**.
 
 ## Install and update
 
@@ -263,7 +263,64 @@ plt.colorbar(m)
 plt.savefig("../pic/one_test.png")
 ```
 
+Result:
+
+![](https://raw.githubusercontent.com/ZiluM/sacpy/master/pic/one_test.png)
+
+## examples of concise
+
+If you want to plot example1's figure , you need write:
+
+```Python
+from cartopy.mpl.ticker import LongitudeFormatter, LatitudeFormatter
+from matplotlib.ticker import MultipleLocator
+import cartopy.crs as ccrs
+plt.rc('font', family='Times New Roman', size=12)
+ax = plt.axes(projection=ccrs.PlateCarree(central_longitude=180))
+m = ax.contourf(ssta.lon,ssta.lat,linreg.corr,
+                cmap="RdBu_r",
+                levels=np.linspace(-1, 1, 15),
+                extend="both",
+                transform=ccrs.PlateCarree())
+n = plt.contourf(ssta.lon,ssta.lat,linreg.p_value,
+                 levels=[0, 0.05, 1],
+                 zorder=1,
+                 hatches=['..', None],
+                 colors="None",
+                 transform=ccrs.PlateCarree())
+xtk = np.arange(-180,181,60)
+ax.set_xticks(xtk)
+# ax.set_xticks(xtk,crs=ccrs.PlateCarree())
+ax.set_yticks(np.arange(-50,51,20),crs=ccrs.PlateCarree())
+ax.yaxis.set_major_formatter(LatitudeFormatter())
+ax.xaxis.set_major_formatter(LongitudeFormatter(zero_direction_label=True))
+ax.xaxis.set_minor_locator(MultipleLocator(10))
+ax.yaxis.set_minor_locator(MultipleLocator(5))
+ax.coastlines()
+ax.set_aspect("auto")
+plt.colorbar(m)
+
+```
+
+**So troublesome!!!**
+
+But if you `import sacpy.Map`, you can easily write:
+
+```Python
+import sacpy.Map
+import cartopy.crs as ccrs
+fig = plt.figure(figsize=[7, 3])
+ax = plt.axes(projection=ccrs.PlateCarree(central_longitude=180))
+lon ,lat = np.array(ssta.lon) , np.array(ssta.lat)
+m = ax.scontourf(lon,lat,rvalue)
+n = ax.sig_plot(lon,lat,p,color="k",marker="..")
+ax.init_map(stepx=50, ysmall=2.5)
+plt.colorbar(m)
+```
+How wonderful, how concise !
+
+
 ## Acknowledgements
 
 
-Thank Prof. Feng Zhu (NUIST,https://github.com/fzhu2e) for his guidance of this project
+Thank Prof. Feng Zhu (NUIST,https://github.com/fzhu2e) for his guidance of this project.
