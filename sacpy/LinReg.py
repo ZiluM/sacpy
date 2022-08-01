@@ -1,5 +1,6 @@
 from .linger_cal import linear_reg, multi_linreg, multi_corr, partial_corr
 import numpy as np
+import xarray as xr
 
 
 class LinReg:
@@ -21,6 +22,10 @@ class LinReg:
             y (np.ndarray): shape = (time,*number)
             x's dim0 must equal to y'dim0 !
         """
+        if isinstance(x, xr.DataArray):
+            x = np.array(x)
+        if isinstance(y, xr.DataArray):
+            y = np.array(y)
         self.slope, self.intcpt, self.corr, self.p_value = linear_reg(x, y)
 
 
@@ -46,6 +51,10 @@ class MultLinReg:
             cal_sim (Bool) : Whether to call function multi_linreg
             x's dim0 must equal to y'dim0 !
         """
+        if isinstance(x, xr.DataArray):
+            x = np.array(x)
+        if isinstance(y, xr.DataArray):
+            y = np.array(y)
         self.x = x
         self.y = y
         if cal_sim:

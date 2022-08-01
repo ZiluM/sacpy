@@ -1,5 +1,6 @@
 import numpy as np
 import scipy.stats as sts
+import xarray as xr
 
 EPS = 1e-5
 
@@ -16,6 +17,8 @@ class EOF:
                         or can be broadcast to space grid number)
         """
         # original data
+        if isinstance(data, xr.DataArray):
+            data = np.array(data)
         if weights is None:
             self.data = np.copy(data)
         else:
@@ -194,6 +197,6 @@ class EOF:
                           (data_noNan.std(axis=1)[..., np.newaxis])
 
         corr = norm_evctor @ data_noNan_norm.T / (N + 2)  # npatterns,data_time
-        t_value = np.abs(corr / (EPS + np.sqrt(1 - corr ** 2)) * np.sqrt(N))
+        t_value = np.abs(corr / (EPS + np.sqrt(1 - corr**2)) * np.sqrt(N))
         p_value = sts.t.sf(t_value, df=N - 2) * 2
         return corr, p_value

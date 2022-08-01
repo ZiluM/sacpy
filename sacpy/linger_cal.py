@@ -24,7 +24,7 @@ def linear_reg(x: np.ndarray, y: np.ndarray):
     org_sp_Y = y.shape
     # no equal, raise error
     if Num0 != Num1:
-        raise (TypeError("x.shape[0] no equal to y.shape[0] , dim0 is wrong"))
+        raise (ValueError("x.shape[0] no equal to y.shape[0] , dim0 is wrong"))
     # reshape y to (time,number)
     y_rs = y.reshape(Num1, -1)
     # cal anomaly
@@ -150,12 +150,12 @@ def multi_corr(x: np.ndarray, y: np.ndarray):
     x_norm_b = np.repeat(x_norm[..., np.newaxis], axis=2, repeats=Nums)  # (t,Nf,Ns)
     y_norm_b = y_norm[:, np.newaxis, :]  # (t , 1 ,Ns)
     conc_xy = np.concatenate([x_norm_b, y_norm_b], axis=1)  # (t,Nf+1,Ns)
-    corr_matrix = np.transpose(conc_xy, axes=[2, 1, 0]) @ np.transpose(conc_xy, axes=[2, 0, 1]) / Num0 # (Ns,Nf+1,Nf+1)
+    corr_matrix = np.transpose(conc_xy, axes=[2, 1, 0]) @ np.transpose(conc_xy, axes=[2, 0, 1]) / Num0  # (Ns,Nf+1,Nf+1)
     corr_matrix = corr_matrix.reshape([*org_sp_Y[1:], Numf + 1, Numf + 1])
     return corr_matrix
 
 
-def partial_corr(x: np.ndarray, y: np.ndarray, indx: int , mul_corr=None):
+def partial_corr(x: np.ndarray, y: np.ndarray, indx: int, mul_corr=None):
     """ calculate partial correlation
 
     Args:

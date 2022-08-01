@@ -14,7 +14,7 @@ pypi : https://pypi.org/project/sacpy/
 
 examples or document :  https://github.com/ZiluM/sacpy/tree/master/examples or https://gitee.com/zilum/sacpy/tree/master/examples
 
-version : 0.0.11
+version : 0.0.12
 
 ## Why choose Sacpy?
 
@@ -26,8 +26,11 @@ For example, Sacpy is more than 60 times faster than the traditional regression 
 
 Compatible with commonly used meteorological calculation libraries such as numpy and xarray.
 
+### Concise code
 
-## Install
+You can complete the drawing with just seven lines of code. see examples of concise.
+
+## Install and update
 
 You can use pip to install.
 
@@ -36,6 +39,12 @@ You can use pip to install.
 Or you can visit https://gitee.com/zilum/sacpy/tree/master/dist to download **.whl file**, then
 
         pip install .whl_file
+
+update: 
+
+        pip install --upgrade
+
+or you can download **.whl** file and then install use ` pip install .whl_file`.
 
 ## Speed 
 
@@ -59,7 +68,8 @@ Calculate the correlation between SST and nino3.4 index
 import numpy as np
 import scapy as scp
 import matplotlib.pyplot as plt
-
+import sacpy.Map # need cartopy or you can just not import
+import cartopy.crs as ccrs
 
 # load sst
 sst = scp.load_sst()['sst']
@@ -70,12 +80,19 @@ Nino34 = ssta.loc[:,-5:5,190:240].mean(axis=(1,2))
 # regression
 linreg = scp.LinReg(np.array(Nino34),np.array(ssta))
 # plot
-plt.contourf(linreg.corr)
-# Significance test
-plt.contourf(linreg.p_value,levels=[0, 0.05, 1],zorder=1,
-            hatches=['..', None],colors="None",)
+fig = plt.figure(figsize=[7, 3])
+ax = plt.axes(projection=ccrs.PlateCarree(central_longitude=180))
+lon ,lat = np.array(ssta.lon) , np.array(ssta.lat)
+# shading
+m = ax.scontourf(lon,lat,linreg.corr)
+# significant plot
+n = ax.sig_plot(lon,lat,linreg.p_value,color="k",marker="..")
+# initialize map
+ax.init_map(stepx=50, ysmall=2.5)
+# colorbar
+plt.colorbar(m)
 # save
-plt.savefig("./nino34.png")
+plt.savefig("../pic/nino34.png",dpi=200)
 
 ```
 Result(For a detailed drawing process, see **example**):
@@ -106,12 +123,22 @@ IODI = +IODW - IODE
 X = np.vstack([np.array(Nino34),np.array(IODI)]).T
 # multiple linear regression
 MLR = scp.MultLinReg(X,np.array(ssta))
+
 # plot IOD's effect
-plt.contourf(MLR.slope[1])
-# Significance test
-plt.contourf(MLR.pv_i[1],levels=[0, 0.1, 1],zorder=1,
-            hatches=['..', None],colors="None",)
-plt.savefig("../pic/MLR.png")
+import sacpy.Map
+import cartopy.crs as ccrs
+
+
+fig = plt.figure(figsize=[7, 3])
+ax = plt.axes(projection=ccrs.PlateCarree(central_longitude=180))
+lon ,lat = np.array(ssta.lon) , np.array(ssta.lat)
+m = ax.scontourf(lon,lat,MLR.slope[1])
+# significant plot
+n = ax.sig_plot(lon,lat,MLR.pv_i[1],color="k",marker="..")
+# initialize map
+ax.init_map(stepx=50, ysmall=2.5)
+plt.colorbar(m)
+plt.savefig("../pic/MLR.png",dpi=200)
 ```
 Result(For a detailed drawing process, see **example**):
 
@@ -143,12 +170,19 @@ JJA_ssta = scp.XrTools.spec_moth_yrmean(ssta, [6,7,8])
 # regression
 reg = scp.LinReg(np.array(DJF_nino34)[:-1], np.array(JJA_ssta))
 # plot
-plt.contourf(reg.corr)
-# Significance test
-plt.contourf(reg.p_value,levels=[0, 0.05, 1],zorder=1,
-            hatches=['..', None],colors="None",)
-# save
-plt.savefig("./ENSO_Next_year_JJA.png",dpi=300)
+import cartopy.crs as ccrs
+import sacpy.Map
+
+
+fig = plt.figure(figsize=[7, 3])
+ax = plt.axes(projection=ccrs.PlateCarree(central_longitude=180))
+lon ,lat = np.array(ssta.lon) , np.array(ssta.lat)
+m = ax.scontourf(lon,lat,reg.slope)
+n = ax.sig_plot(lon,lat,reg.p_value,color="k",marker="///")
+ax.init_map(stepx=50, ysmall=2.5)
+plt.colorbar(m)
+plt.savefig("../pic/ENSO_Next_year_JJA.png",dpi=300)
+
 ```
 
 ![](https://raw.githubusercontent.com/ZiluM/sacpy/master/pic/ENSO_Next_year_JJA.png)
@@ -173,24 +207,61 @@ eof.solve()
 pc = eof.get_pc(npt=2)
 pt = eof.get_pt(npt=2)
 # plot
-plt.figure(figsize=[12,10])
-plt.subplot(221)
-plt.contourf(pt[0,:,:])
-plt.colorbar()
-plt.subplot(222)
-plt.plot(sst.time,pc[0])
-plt.subplot(223)
-plt.contourf(pt[1,:,:])
-plt.colorbar()
-plt.subplot(224)
-plt.plot(sst.time,pc[1])
+import cartopy.crs as ccrs
+import sacpy.Map
+lon , lat = np.array(ssta.lon) , np.array(ssta.lat)
+fig = plt.figure(figsize=[15,10])
+ax = fig.add_subplot(221,projection=ccrs.PlateCarree(central_longitude=180))
+m1 = ax.scontourf(lon,lat,pt[0,:,:],cmap='RdBu_r',levels=np.linspace(-0.75,0.75,15),extend="both")
+ax.scontour(m1,colors="black")
+ax.init_map(ysmall=2.5)
+# plt.colorbar(m1)
+ax2 = fig.add_subplot(222)
+ax2.plot(sst.time,pc[0])
+ax3 = fig.add_subplot(223,projection=ccrs.PlateCarree(central_longitude=180))
+m2 = ax3.scontourf(lon,lat,pt[1,:,:],cmap='RdBu_r',levels=np.linspace(-0.75,0.75,15),extend="both")
+ax3.scontour(m2,colors="black")
+ax3.init_map(ysmall=2.5)
+ax4 = fig.add_subplot(224)
+ax4.plot(sst.time,pc[1])
+cb_ax = fig.add_axes([0.1,0.06,0.4,0.02])
+fig.colorbar(m1,cax=cb_ax,orientation="horizontal")
 plt.savefig("../pic/eof_ana.png",dpi=300)
 ```
 
 ![](https://raw.githubusercontent.com/ZiluM/sacpy/master/pic/eof_ana.png)
 
+## example5
 
+Mean value (Composite Analysis) t-test for super El Nino (DJF Nino3.4 > 1)
 
+```Python
+
+import sacpy as scp
+import numpy as np
+import matplotlib.pyplot as plt
+
+sst = scp.load_sst()["sst"]
+ssta = scp.get_anom(sst, method=0)
+# get Dec Jan Feb SSTA
+ssta_djf = scp.XrTools.spec_moth_yrmean(ssta,[12,1,2])
+Nino34 = ssta_djf.loc[:, -5:5, 190:240].mean(axis=(1, 2))
+# select year of Super El Nino
+select = Nino34 >= 1
+ssta_sl = ssta_djf[select]
+mean, pv = scp.one_mean_test(np.array(ssta_sl))
+# plot
+import sacpy.Map
+import cartopy.crs as ccrs
+fig = plt.figure(figsize=[7, 3])
+ax = plt.axes(projection=ccrs.PlateCarree(central_longitude=180))
+lon ,lat = np.array(ssta.lon) , np.array(ssta.lat)
+m = ax.scontourf(lon,lat,mean)
+n = ax.sig_plot(lon,lat,pv,color="k",marker="..")
+ax.init_map(stepx=50, ysmall=2.5)
+plt.colorbar(m)
+plt.savefig("../pic/one_test.png")
+```
 
 ## Acknowledgements
 
