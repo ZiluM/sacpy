@@ -5,4 +5,4 @@ current_dir = os.path.split(os.path.realpath(__file__))[0]
 
 
 def load_sst():
-    return xr.open_dataset(current_dir + "/data/HadISST_sst_2x2.nc")
+    return xr.open_dataset(current_dir + "/data/example/HadISST_sst_2x2.nc")
