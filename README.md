@@ -28,7 +28,10 @@ Compatible with commonly used meteorological calculation libraries such as numpy
 
 ### Concise code
 
-You can complete the drawing with just seven lines of code. see **examples of concise**.
+You can finish drawing a following figure with just seven lines of code. see **examples of concise**.
+
+
+![](https://raw.githubusercontent.com/ZiluM/sacpy/master/pic/one_test.png)
 
 ## Install and update
 
@@ -42,7 +45,7 @@ Or you can visit https://gitee.com/zilum/sacpy/tree/master/dist to download **.w
 
 update: 
 
-        pip install --upgrade
+        pip install --upgrade sacpy
 
 or you can download **.whl** file and then install use ` pip install .whl_file`.
 
@@ -323,4 +326,6 @@ How wonderful, how concise !
 ## Acknowledgements
 
 
-Thank Prof. Feng Zhu (NUIST,https://github.com/fzhu2e) for his guidance of this project.
+Thank Prof. Feng Zhu (NUIST,https://fzhu2e.github.io/) for his guidance of this project.
+
+Thank Prof. Tim Li (University of Hawaii at Mānoa, http://iprc.soest.hawaii.edu/people/li.php) ,Prof. Lin Chen (NUIST, https://faculty.nuist.edu.cn/chenlin12/zh_CN/index.htm) and Dr. Ming Sun (NUIST) 's help.
