@@ -328,4 +328,4 @@ How wonderful, how concise !
 
 Thank Prof. Feng Zhu (NUIST,https://fzhu2e.github.io/) for his guidance of this project.
 
-Thank Prof. Tim Li (University of Hawaii at Mānoa, http://iprc.soest.hawaii.edu/people/li.php) ,Prof. Lin Chen (NUIST, https://faculty.nuist.edu.cn/chenlin12/zh_CN/index.htm) and Dr. Ming Sun (NUIST) 's help.
+Thank for Prof. Tim Li (University of Hawaii at Mānoa, http://iprc.soest.hawaii.edu/people/li.php) ,Prof. Lin Chen (NUIST, https://faculty.nuist.edu.cn/chenlin12/zh_CN/index.htm) and Dr. Ming Sun (NUIST) 's help.
