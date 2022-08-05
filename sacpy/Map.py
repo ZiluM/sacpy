@@ -3,12 +3,13 @@ try:
     import cartopy.crs as ccrs
     from cartopy.mpl.ticker import LongitudeFormatter, LatitudeFormatter
 except:
-    raise ImportError("Can't import cartopy")
+    raise ImportError("Can't import cartopy, please check your envs")
 from matplotlib.ticker import MultipleLocator
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
+# set font to TNR
 plt.rc('font', family='Times New Roman')
 
 

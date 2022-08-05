@@ -94,6 +94,11 @@ class EOF:
         # save
         self.patterns = patterns
 
+    def get_eign(self):
+        """ get eign of each pattern
+        """
+        return self.eign
+
     def get_varperc(self, npt=None):
         """ return variance percential
 

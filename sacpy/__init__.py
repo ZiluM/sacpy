@@ -6,6 +6,8 @@ from .load_sst import load_sst
 from .EOF import EOF
 from .linger_cal import linear_reg, multi_linreg, multi_corr, partial_corr
 from .SigTest import one_mean_test, two_mean_test
+from .SVD import SVD
+
 
 __author__ = "Zilu Meng"
 __email__ = "mzll1202@163.com"

@@ -60,7 +60,7 @@ def spec_moth_dat(DaArray: xr.DataArray, months: list):
     Returns:
         xr.DataArray: data in specific month
     """
-    if type(DaArray) != xr.DataArray:
+    if isinstance(DaArray,xr.DataArray):
         raise ValueError("'xr.DataArray' input is required, not the %s" % (type(DaArray)))
     if not "time" in list(DaArray.coords.keys()):
         raise ValueError("DaArray must have coords 'time' !")
