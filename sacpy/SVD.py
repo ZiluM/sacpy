@@ -40,16 +40,20 @@ class SVD():
         return data_nN, flag
 
     def solve(self):
+        """ solve the SVD
+        """
+        # mask data
         data1_noNan, flag1 = self._mask_nan(self.rsp_data1)
         data2_noNan, flag2 = self._mask_nan(self.rsp_data2)
         self.flag1, self.flag2 = flag1, flag2
-        print(data1_noNan.shape, data2_noNan.shape)
+        # get covariance
         Covan = data1_noNan.T @ data2_noNan
+        # svd solver
         U_matrix, S, V_matrix = np.linalg.svd(Covan)
+        # save
         self._U = U_matrix
         self._V = V_matrix
         self.eign = S
-        # return U_matrix,V_matrix,S
 
     def get_eign(self):
         return self.eign
@@ -63,7 +67,7 @@ class SVD():
         pc_right = self._V[:npt, :] @ self.rsp_data2.T
         return pc_left, pc_right
 
-    def get_pt(self, npt):
+    def get_pt(self,npt):
         #
         patterns_left = np.zeros((npt, *self.rsp_data1.shape[1:]),dtype=np.complex64)
         patterns_left[:, self.flag1] = self._U[:, :npt].T

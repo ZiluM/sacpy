@@ -2,6 +2,9 @@ from .linger_cal import linear_reg, multi_linreg, multi_corr, partial_corr
 import numpy as np
 import xarray as xr
 from scipy.spatial.distance import cdist
+import scipy.stats as sts
+
+EPS = 1e-6
 
 
 class LinReg:
@@ -30,17 +33,49 @@ class LinReg:
         self.slope, self.intcpt, self.corr, self.p_value = linear_reg(x, y)
 
     def _repr_html_(self):
+        """
+        show in jupyter
+        """
         from .repr_html import res_repr_html
         return (res_repr_html(self))
 
 
 class M2mLinReg():
 
-    def __init__(self, x, y):
+    def __init__(self, x: np.ndarray, y: np.ndarray):
+        """ calculate correlation of x[time,n_factor] and y[time,n_factor] and their p_value
+        Args:
+            x (np.ndarray): shape [time,n_factor]
+            y (np.ndarray): shape [time,m_factor]
+
+        Attribute:
+            self.corr: [n_factor, m_factor]
+            self.p_value [n_factor, m_factor]
+        """
         if isinstance(x, xr.DataArray):
             x = np.array(x)
         if isinstance(y, xr.DataArray):
             y = np.array(y)
+        if x.shape[0] != y.shape[0]:
+            raise ValueError(f"x.dim0 is {x.shape[0]} , y.dim0 is {y.shape[0]} ; not equal.")
+        Num0 = x.shape[0]
+        x = x.reshape((x.shape[0], -1)).T
+        y = y.reshape((y.shape[0], -1)).T
+        corr = 1 - cdist(x, y, "correlation")
+        self.corr = corr
+        t = corr / (np.sqrt(1 - corr**2) + EPS) * np.sqrt(Num0 - 2)
+        p_value = sts.t.sf(t, df=Num0 - 2)
+        pv_cp = np.copy(p_value)
+        p_value[pv_cp >= 0.5] = (1 - p_value[pv_cp >= 0.5]) * 2
+        p_value[pv_cp < 0.5] = (p_value[pv_cp < 0.5]) * 2
+        self.p_value = p_value
+
+    def _repr_html_(self):
+        """
+        show in jupyter
+        """
+        from .repr_html import res_repr_html
+        return (res_repr_html(self))
 
 
 class MultLinReg:
@@ -95,5 +130,8 @@ class MultLinReg:
         return self.part_corr[idx]
 
     def _repr_html_(self):
+        """
+        show in jupyter
+        """
         from .repr_html import res_repr_html
         return (res_repr_html(self))
