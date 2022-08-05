@@ -16,7 +16,7 @@ examples or document :  https://github.com/ZiluM/sacpy/tree/master/examples or h
 
 version : 0.0.14
 
-Sepcial thanks: Linfei Lin (Sun Yat-sen University) 's `repr_html.py` to visualize class in jupyter!
+Sepcial thanks: Lifei Lin (Sun Yat-sen University) 's `repr_html.py` to visualize class in jupyter!
 
 ## Why choose Sacpy?
 

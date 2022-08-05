@@ -1,6 +1,7 @@
 from .linger_cal import linear_reg, multi_linreg, multi_corr, partial_corr
 import numpy as np
 import xarray as xr
+from scipy.spatial.distance import cdist
 
 
 class LinReg:
@@ -27,9 +28,19 @@ class LinReg:
         if isinstance(y, xr.DataArray):
             y = np.array(y)
         self.slope, self.intcpt, self.corr, self.p_value = linear_reg(x, y)
+
     def _repr_html_(self):
         from .repr_html import res_repr_html
-        return(res_repr_html(self))
+        return (res_repr_html(self))
+
+
+class M2mLinReg():
+
+    def __init__(self, x, y):
+        if isinstance(x, xr.DataArray):
+            x = np.array(x)
+        if isinstance(y, xr.DataArray):
+            y = np.array(y)
 
 
 class MultLinReg:
@@ -82,7 +93,7 @@ class MultLinReg:
         """
         self.part_corr[idx] = partial_corr(self.x, self.y, idx, mul_corr=self.multi_corr)
         return self.part_corr[idx]
-    
+
     def _repr_html_(self):
         from .repr_html import res_repr_html
-        return(res_repr_html(self))
+        return (res_repr_html(self))
