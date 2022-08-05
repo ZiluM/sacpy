@@ -14,7 +14,9 @@ pypi : https://pypi.org/project/sacpy/
 
 examples or document :  https://github.com/ZiluM/sacpy/tree/master/examples or https://gitee.com/zilum/sacpy/tree/master/examples
 
-version : 0.0.13
+version : 0.0.14
+
+Sepcial thanks: Linfei Lin (Sun Yat-sen University) 's `repr_html.py` to visualize class in jupyter!
 
 ## Why choose Sacpy?
 
