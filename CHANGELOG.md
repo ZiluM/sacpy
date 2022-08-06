@@ -42,7 +42,7 @@ Change example!
 
 ## version 0.0.14
 
-Add SVD(MCA) analysis and visualization of LinReg in Jupyter
+Add SVD(MCA) analysis and visualization of LinReg in Jupyter.
 
 
 
