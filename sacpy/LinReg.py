@@ -3,11 +3,13 @@ import numpy as np
 import xarray as xr
 from scipy.spatial.distance import cdist
 import scipy.stats as sts
+from .Util import _correct_type
 
 EPS = 1e-6
 
 
 class LinReg:
+    name = "LinReg"
     """
     Simple linear regression
         y[idx] = slope[idx] * x + intcp[idx]
@@ -26,10 +28,16 @@ class LinReg:
             y (np.ndarray): shape = (time,*number)
             x's dim0 must equal to y'dim0 !
         """
-        if isinstance(x, xr.DataArray):
-            x = np.array(x)
-        if isinstance(y, xr.DataArray):
-            y = np.array(y)
+        # if isinstance(x, xr.DataArray):
+        #     x = np.array(x)
+        # if isinstance(y, xr.DataArray):
+        #     y = np.array(y)
+        x = _correct_type(x)
+        y = _correct_type(y)
+        if x.shape[0] != y.shape[0]:
+            raise ValueError(f"x.dim0 is {x.shape[0]} , y.dim0 is {y.shape[0]} ; not equal.")
+        self.x = x
+        self.y = y
         self.slope, self.intcpt, self.corr, self.p_value = linear_reg(x, y)
 
     def _repr_html_(self):
@@ -39,8 +47,15 @@ class LinReg:
         from .repr_html import res_repr_html
         return (res_repr_html(self))
 
+    def __repr__(self) -> str:
+        res = f"{self.name}, x.shape = {self.x.shape}, y.shape = {self.y.shape} "
+        return res
+
+    __str__ = __repr__
+
 
 class M2mLinReg():
+    name = "M2mLinReg"
 
     def __init__(self, x: np.ndarray, y: np.ndarray):
         """ calculate correlation of x[time,n_factor] and y[time,n_factor] and their p_value
@@ -52,10 +67,12 @@ class M2mLinReg():
             self.corr: [n_factor, m_factor]
             self.p_value [n_factor, m_factor]
         """
-        if isinstance(x, xr.DataArray):
-            x = np.array(x)
-        if isinstance(y, xr.DataArray):
-            y = np.array(y)
+        # if isinstance(x, xr.DataArray):
+        #     x = np.array(x)
+        # if isinstance(y, xr.DataArray):
+        #     y = np.array(y)
+        x = _correct_type(x)
+        y = _correct_type(y)
         if x.shape[0] != y.shape[0]:
             raise ValueError(f"x.dim0 is {x.shape[0]} , y.dim0 is {y.shape[0]} ; not equal.")
         Num0 = x.shape[0]
@@ -79,6 +96,7 @@ class M2mLinReg():
 
 
 class MultLinReg:
+    name = "MultLinReg"
     """
     multiple linear regression ::
         y[idx] = slope[idx,0] * x[0] + slope[idx, 1] * x[1] + ... + intcp[idx]
@@ -100,10 +118,14 @@ class MultLinReg:
             cal_sim (Bool) : Whether to call function multi_linreg
             x's dim0 must equal to y'dim0 !
         """
-        if isinstance(x, xr.DataArray):
-            x = np.array(x)
-        if isinstance(y, xr.DataArray):
-            y = np.array(y)
+        # if isinstance(x, xr.DataArray):
+        #     x = np.array(x)
+        # if isinstance(y, xr.DataArray):
+        #     y = np.array(y)
+        x = _correct_type(x)
+        y = _correct_type(y)
+        if x.shape[0] != y.shape[0]:
+            raise ValueError(f"x.dim0 is {x.shape[0]} , y.dim0 is {y.shape[0]} ; not equal.")
         self.x = x
         self.y = y
         if cal_sim:
@@ -135,3 +157,9 @@ class MultLinReg:
         """
         from .repr_html import res_repr_html
         return (res_repr_html(self))
+
+    def __repr__(self) -> str:
+        res = f"{self.name}, x.shape = {self.x.shape}, y.shape = {self.y.shape} "
+        return res
+
+    __str__ = __repr__

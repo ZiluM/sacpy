@@ -36,10 +36,10 @@ def get_anom(DaArray: xr.DataArray, method=0):
     Returns:
         anom (xr.DataArray): climate data anomaly
     """
-    if type(DaArray) != xr.DataArray:
-        raise ValueError("'xr.DataArray' input is required, not the %s" % (type(DaArray)))
+    if not isinstance(DaArray, xr.DataArray):
+        raise TypeError("'xr.DataArray' input is required, not the %s" % (type(DaArray)))
     if not "time" in list(DaArray.coords.keys()):
-        raise ValueError("DaArray must have coords 'time' !")
+        raise TypeError("DaArray must have coords 'time' !")
     if method == 0:
         anom = DaArray.groupby("time.month") - DaArray.groupby("time.month").mean()
     if method == 1:
@@ -48,7 +48,7 @@ def get_anom(DaArray: xr.DataArray, method=0):
     return anom
 
 
-def spec_moth_dat(DaArray: xr.DataArray, months: list):
+def spec_moth_dat(DaArray: xr.DataArray, months: list or str):
     """ get specific month data 
     Args:
         DaArray (xr.DataArray): shape = (time, *number) original Dataarray
@@ -60,10 +60,15 @@ def spec_moth_dat(DaArray: xr.DataArray, months: list):
     Returns:
         xr.DataArray: data in specific month
     """
-    if isinstance(DaArray,xr.DataArray):
+    if not isinstance(DaArray, xr.DataArray):
         raise ValueError("'xr.DataArray' input is required, not the %s" % (type(DaArray)))
     if not "time" in list(DaArray.coords.keys()):
         raise ValueError("DaArray must have coords 'time' !")
+    season_dict = {"DJF": [12, 1, 2], "MAM": [3, 4, 5], "JJA": [6, 7, 8], "SON": [9, 10, 11]}
+    if isinstance(months, str):
+        months = season_dict.get(months)
+        if months is None:
+            raise TypeError(f"months mush be in {season_dict.keys()}")
     time = DaArray.time
     time_label = time.dt.month == months[0]
     for i in range(len(months)):
@@ -71,7 +76,7 @@ def spec_moth_dat(DaArray: xr.DataArray, months: list):
     return DaArray[time_label]
 
 
-def spec_moth_yrmean(DaArray: xr.DataArray, months: list):
+def spec_moth_yrmean(DaArray: xr.DataArray, months: list or str):
     """ get specific month data and average them in each year
 
     Args:
@@ -82,6 +87,11 @@ def spec_moth_yrmean(DaArray: xr.DataArray, months: list):
         xr.DataArray: data in specific month and average them in each year
     """
     # get data in specifc month
+    season_dict = {"DJF": [12, 1, 2], "MAM": [3, 4, 5], "JJA": [6, 7, 8], "SON": [9, 10, 11]}
+    if isinstance(months, str):
+        months = season_dict.get(months)
+        if months is None:
+            raise TypeError(f"months mush be in {season_dict.keys()}")
     smd = spec_moth_dat(DaArray, months)
     # get time
     time = smd.time
@@ -94,6 +104,8 @@ def spec_moth_yrmean(DaArray: xr.DataArray, months: list):
     ed_idx = -((+months.index(month_end) + 1) % len(months))
     ed_idx = None if ed_idx == 0 else ed_idx
     st_idx = len(months) - months.index(month_start)
+    if st_idx == len(months):
+        st_idx = 0
     smd_cyc = smd[st_idx:ed_idx]
     # get year list
     year_list = smd_cyc[::len(months)].time.dt.year

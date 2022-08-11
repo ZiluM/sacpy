@@ -1,5 +1,6 @@
 import numpy as np
 import xarray as xr
+from .Util import _correct_type
 
 EPS = 1e-5
 
@@ -8,16 +9,23 @@ class SVD():
     """ SVD analysis of data
     """
 
-    def __init__(self, data1: np.ndarray, data2: np.ndarray):
+    def __init__(self, data1: np.ndarray, data2: np.ndarray, complex=False):
         """ initiation of EOF
         Args:
             data1 and data2 (np.ndarray): shape (time, * space grid number)
         """
         # original data
-        if isinstance(data1, xr.DataArray):
-            data1 = np.array(data1,dtype=np.complex128)
-        if isinstance(data2, xr.DataArray):
-            data2 = np.array(data2,dtype=np.complex128)
+        if complex:
+            dtype_np = np.complex128
+        else:
+            dtype_np = np.float64
+        self.dtype_np = dtype_np
+        # if isinstance(data1, xr.DataArray):
+        #     data1 = np.array(data1, dtype=dtype_np)
+        data1 = _correct_type(data1, dtype=dtype_np)
+        # if isinstance(data2, xr.DataArray):
+        #     data2 = np.array(data2, dtype=dtype_np)
+        data2 = _correct_type(data2, dtype=dtype_np)
         self.origin_shape1 = data1.shape
         self.origin_shape2 = data2.shape
         # time length
@@ -56,9 +64,11 @@ class SVD():
         self.eign = S
 
     def get_eign(self):
+        """ return the eign of coviance"""
         return self.eign
 
     def get_varperc(self, npt):
+        """ return percentile of variance eign"""
         var_perc = self.eign[:npt] / np.sum(self.eign)
         return var_perc
 
@@ -67,14 +77,14 @@ class SVD():
         pc_right = self._V[:npt, :] @ self.rsp_data2.T
         return pc_left, pc_right
 
-    def get_pt(self,npt):
+    def get_pt(self, npt):
         #
-        patterns_left = np.zeros((npt, *self.rsp_data1.shape[1:]),dtype=np.complex64)
+        patterns_left = np.zeros((npt, *self.rsp_data1.shape[1:]), dtype=self.dtype_np)
         patterns_left[:, self.flag1] = self._U[:, :npt].T
         patterns_left[:, np.logical_not(self.flag1)] = np.NAN
         patterns_left = patterns_left.reshape((npt, *self.origin_shape1[1:]))
         #
-        patterns_right = np.zeros((npt, *self.rsp_data2.shape[1:]),dtype=np.complex64)
+        patterns_right = np.zeros((npt, *self.rsp_data2.shape[1:]), dtype=self.dtype_np)
         patterns_right[:, self.flag2] = self._V[:npt]
         patterns_right[:, np.logical_not(self.flag2)] = np.NAN
         patterns_right = patterns_right.reshape((npt, *self.origin_shape2[1:]))

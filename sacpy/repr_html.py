@@ -14,7 +14,7 @@ STATIC_FILES = (
 )
 
 def res_repr_html(arr):
-    arr_name = "LinReg"
+    arr_name = arr.name
     header_components = [
         f"<h3>{arr_name}</h3>",
         # f"<div class='xr-obj-type'>{obj_type}</div>",

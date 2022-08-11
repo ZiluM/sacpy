@@ -8,9 +8,13 @@ from matplotlib.ticker import MultipleLocator
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-
+import xarray as xr
+from .Util import _correct_type
 # set font to TNR
 plt.rc('font', family='Times New Roman')
+
+
+
 
 
 def get_levels(data, percentile: int, num_level: int, zero_sym: bool) -> np.ndarray:
@@ -51,6 +55,8 @@ def _store_range(self, x, y):
         x (np.ndarray): x 
         y (np.ndarray): y
     """
+    x = _correct_type(x)
+    y = _correct_type(y)
     if x is not None:
         # save to xrange
         if not hasattr(self, "xrange"):
@@ -62,7 +68,7 @@ def _store_range(self, x, y):
         if not hasattr(self, "yrange"):
             self.yrange = [y]
         else:
-            self.append(y)
+            self.xrange.append(y)
 
 
 def _get_extend(self):
@@ -142,6 +148,9 @@ def _anal_args(args, clas="contourf"):
             x, y = args[0], args[1]
         else:
             raise ValueError("More parameters are transported")
+        x = _correct_type(x)
+        y = _correct_type(y)
+        Z = _correct_type(Z)
         return Z, levels0, x, y
     elif clas == "pcolormesh":
         if len(args) == 1:
@@ -154,6 +163,9 @@ def _anal_args(args, clas="contourf"):
             x, y = args[0], args[1]
         else:
             raise ValueError("More parameters are transported")
+        x = _correct_type(x)
+        y = _correct_type(y)
+        Z = _correct_type(Z)
         return Z, x, y
     elif clas == "quiver":
         if len(args) == 1:
@@ -161,12 +173,21 @@ def _anal_args(args, clas="contourf"):
         elif len(args) == 2:
             U, V = args[0], args[1]
             x, y = np.arange(U.shape[0]), np.arange(U.shape[1])
+            C = None
         elif len(args) == 3:
             U, V = args[0], args[1]
+            C = args[2]
             x, y = np.arange(U.shape[0]), np.arange(U.shape[1])
         elif len(args) == 4:
             x, y, U, V = args
-        return U, V, x, y
+            C = None
+        elif len(args) == 5:
+            x, y, U, V, C = args
+        x = _correct_type(x)
+        y = _correct_type(y)
+        U = _correct_type(U)
+        V = _correct_type(V)
+        return x, y, U, V, C
 
 
 def _contourf(self, *args, **kwargs):
@@ -316,7 +337,22 @@ def _quiver(self, *args, **kwargs):
     if transform is None:
         transform = ccrs.PlateCarree()
         kwargs["transform"] = transform
-    m = self.quiver(*args, **kwargs)
+    stepx = kwargs.get("stepx")
+    if stepx is None:
+        stepx = 1
+    else:
+        del kwargs['stepx']
+    stepy = kwargs.get("stepy")
+    if stepy is None:
+        stepy = 1
+    else:
+        del kwargs['stepy']
+    x, y, U, V, C = _anal_args(args, clas="quiver")
+    if C is None:
+        args1 = [x[::stepx], y[::stepy], U[::stepy, ::stepx], V[::stepy, ::stepx]]
+    else:
+        args1 = [x[::stepx], y[::stepy], U[::stepy, ::stepx], V[::stepy, ::stepx], C]
+    m = self.quiver(*args1, **kwargs)
     return m
 
 
