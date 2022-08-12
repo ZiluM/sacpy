@@ -14,9 +14,6 @@ from .Util import _correct_type
 plt.rc('font', family='Times New Roman')
 
 
-
-
-
 def get_levels(data, percentile: int, num_level: int, zero_sym: bool) -> np.ndarray:
     """ get levels of data
 
@@ -219,7 +216,7 @@ def _contourf(self, *args, **kwargs):
     return m
 
 
-def _draw_ticks(self, extend, stepx=30, stepy=10, xsmall=5, ysmall=5):
+def _draw_ticks(self, extend, stepx=30, stepy=10, smallx=5, smally=5, bigx=10, bigy=10):
     """ draw map ticks
 
     Args:
@@ -231,10 +228,10 @@ def _draw_ticks(self, extend, stepx=30, stepy=10, xsmall=5, ysmall=5):
     """
     [x1, x2, y1, y2] = extend
     # cling to 10 times
-    xs = x1 // 10 * 10 if x1 % 10 == 0 else (x1 // 10 + 1) * 10
-    xe = x2 // 10 * 10
-    ys = y1 // 10 * 10 if y1 % 10 == 0 else (y1 // 10 + 1) * 10
-    ye = y2 // 10 * 10
+    xs = x1 // bigx * bigx if x1 % bigx == 0 else (x1 // bigx + 1) * bigx
+    xe = x2 // bigx * bigx
+    ys = y1 // bigy * bigy if y1 % bigy == 0 else (y1 // bigy + 1) * bigy
+    ye = y2 // bigy * bigy
     # get xticks
     xticks = np.arange(xs, xe + 1, stepx)
     yticks = np.arange(ys, ye + 1, stepy)
@@ -243,8 +240,8 @@ def _draw_ticks(self, extend, stepx=30, stepy=10, xsmall=5, ysmall=5):
     self.set_yticks(yticks, crs=ccrs.PlateCarree())
     self.yaxis.set_major_formatter(LatitudeFormatter())
     self.xaxis.set_major_formatter(LongitudeFormatter(zero_direction_label=True))
-    self.xaxis.set_minor_locator(MultipleLocator(xsmall))
-    self.yaxis.set_minor_locator(MultipleLocator(ysmall))
+    self.xaxis.set_minor_locator(MultipleLocator(smallx))
+    self.yaxis.set_minor_locator(MultipleLocator(smally))
 
 
 def _initialize_map(self, same_size=True, coastlines=True, **kwargs):

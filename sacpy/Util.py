@@ -77,14 +77,25 @@ def _correct_type(data, dtype=np.float64):
     """ 
 
     Args:
-        data (_type_): _description_
-        dtype (_type_, optional): _description_. Defaults to np.float64.
+        data (any): data to correct
+        dtype (any, optional): data format. Defaults to np.float64.
 
     Returns:
-        _type_: _description_
+        format data
     """
     if not isinstance(data, np.ndarray):
         data1 = np.array(data, dtype=dtype)
     else:
         data1 = data
     return data1
+
+
+def gradient_array(data: np.ndarray, dim: int, method: int = 0):
+    data1 = _correct_type(data)
+    data1_sp = data1.swapaxes(0, dim)
+    if method == 0:
+        grd_dat = data1_sp[2:] - data1_sp[:-2]
+    elif method == 1:
+        grd_dat = data1_sp[1:] - data1_sp[:-1]
+    grd_dat = grd_dat.swapaxes(0, dim)
+    return grd_dat

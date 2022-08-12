@@ -6,6 +6,7 @@ EPS = 1e-5
 
 
 class SVD():
+    name = "SVD"
     """ SVD analysis of data
     """
 
@@ -53,6 +54,7 @@ class SVD():
         # mask data
         data1_noNan, flag1 = self._mask_nan(self.rsp_data1)
         data2_noNan, flag2 = self._mask_nan(self.rsp_data2)
+        self._data1_noNan,self._data2_noNan = data1_noNan,data2_noNan
         self.flag1, self.flag2 = flag1, flag2
         # get covariance
         Covan = data1_noNan.T @ data2_noNan
@@ -73,8 +75,8 @@ class SVD():
         return var_perc
 
     def get_pc(self, npt):
-        pc_left = self._U[:, :npt].T @ self.rsp_data1.T
-        pc_right = self._V[:npt, :] @ self.rsp_data2.T
+        pc_left = self._U[:, :npt].T @ self._data1_noNan.T
+        pc_right = self._V[:, :npt].T @ self._data2_noNan.T
         return pc_left, pc_right
 
     def get_pt(self, npt):

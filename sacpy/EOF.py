@@ -8,6 +8,7 @@ EPS = 1e-5
 class EOF:
     """ EOF analysis of data
     """
+    name = "EOF"
 
     def __init__(self, data: np.ndarray, weights=None):
         """ initiation of EOF
@@ -50,10 +51,7 @@ class EOF:
     #     flag = np.isnan(data0).sum(axis=0) == 0
 
     def solve(self):
-        """ solve 
-
-        Returns:
-            _type_: _description_
+        """ solve the EOF
         """
         # mask data
         self._mask_nan()
