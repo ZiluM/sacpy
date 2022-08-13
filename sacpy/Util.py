@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
+import xarray as xr
 
 
 def convert_lon(lon: np.ndarray):
@@ -91,6 +92,18 @@ def _correct_type(data, dtype=np.float64):
 
 
 def gradient_array(data: np.ndarray, dim: int, method: int = 0):
+    """ gradient array in dim
+
+    Args:
+        data (np.ndarray): data need to calculate gradient
+        dim (int) 
+        method (int, optional): 0 is Central difference;
+                        1 is front difference or half grid central difference;
+                        . Defaults to 0.
+
+    Returns:
+        gradient array
+    """
     data1 = _correct_type(data)
     data1_sp = data1.swapaxes(0, dim)
     if method == 0:
@@ -99,3 +112,32 @@ def gradient_array(data: np.ndarray, dim: int, method: int = 0):
         grd_dat = data1_sp[1:] - data1_sp[:-1]
     grd_dat = grd_dat.swapaxes(0, dim)
     return grd_dat
+
+
+def gradient_da(da, dim, method=0, delta=None):
+
+    if not isinstance(da, xr.DataArray):
+        raise TypeError("'xr.DataArray' input is required, not the %s" % (type(da)))
+    if not dim in list(da.coords.keys()):
+        raise TypeError(f"DaArray don't have coords {dim} !")
+    dim_coord = da[dim]
+    if method == 0:
+        dim_coord1 = dim_coord[1:]
+        dim_coord2 = dim_coord[:-1]
+    elif method == 1:
+        dim_coord1 = dim_coord[2:]
+        dim_coord2 = dim_coord[:-2]
+    m_coord = (dim_coord1.to_numpy() + dim_coord2.to_numpy()) / 2
+    # 没写完
+    if delta is None:
+        # delta_dim = {"lon":111e3,"lat":111e3,"level":5}
+        if dim == "lat":
+            delta = 1.11e5
+        elif dim == "level":
+            delta = 5
+        elif dim == "lon":
+            delta = 1.11e5 * np.cos(np.deg2rad(da["lat"]))
+    da1 = da.loc[{dim: dim_coord1}].assign_coords({dim: m_coord})
+    da2 = da.loc[{dim: dim_coord2}].assign_coords({dim: m_coord})
+    diff = (da1 - da2) / delta
+    return diff

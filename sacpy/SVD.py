@@ -103,7 +103,7 @@ class SVD():
             patterns_right *= self.pc_right_std[:npt]
         else:
             pass
-
+        # 
         patterns_left[:, self.flag1] = self._U[:, :npt].T
         patterns_left[:, np.logical_not(self.flag1)] = np.NAN
         patterns_left = patterns_left.reshape((npt, *self.origin_shape1[1:]))
