@@ -21,6 +21,7 @@ class SVD():
         else:
             dtype_np = np.float64
         self.dtype_np = dtype_np
+        self._pc_std_save = 0
         # if isinstance(data1, xr.DataArray):
         #     data1 = np.array(data1, dtype=dtype_np)
         data1 = _correct_type(data1, dtype=dtype_np)
@@ -54,7 +55,7 @@ class SVD():
         # mask data
         data1_noNan, flag1 = self._mask_nan(self.rsp_data1)
         data2_noNan, flag2 = self._mask_nan(self.rsp_data2)
-        self._data1_noNan,self._data2_noNan = data1_noNan,data2_noNan
+        self._data1_noNan, self._data2_noNan = data1_noNan, data2_noNan
         self.flag1, self.flag2 = flag1, flag2
         # get covariance
         Covan = data1_noNan.T @ data2_noNan
@@ -74,20 +75,42 @@ class SVD():
         var_perc = self.eign[:npt] / np.sum(self.eign)
         return var_perc
 
-    def get_pc(self, npt):
+    def get_pc(self, npt, norm="std"):
         pc_left = self._U[:, :npt].T @ self._data1_noNan.T
         pc_right = self._V[:, :npt].T @ self._data2_noNan.T
+        pc_left, pc_right = np.real(pc_left), np.real(pc_right)
+        if norm == "std":
+            self.pc_left_std = pc_left.std(axis=1)[:, np.newaxis]
+            self.pc_right_std = pc_right.std(axis=1)[:, np.newaxis]
+            pc_left /= self.pc_left_std
+            pc_right /= self.pc_right_std
+        else:
+            self.pc_left_std = pc_left.std(axis=1)[:, np.newaxis]
+            self.pc_right_std = pc_right.std(axis=1)[:, np.newaxis]
+        self._pc_std_save = npt
         return pc_left, pc_right
 
-    def get_pt(self, npt):
+    def get_pt(self, npt, norm="std"):
         #
         patterns_left = np.zeros((npt, *self.rsp_data1.shape[1:]), dtype=self.dtype_np)
+        patterns_right = np.zeros((npt, *self.rsp_data2.shape[1:]), dtype=self.dtype_np)
+        if norm == "std":
+            if npt > self._pc_std_save:
+                self.get_pc(npt=npt)
+            else:
+                pass
+            patterns_left *= self.pc_left_std[:npt]
+            patterns_right *= self.pc_right_std[:npt]
+        else:
+            pass
+
         patterns_left[:, self.flag1] = self._U[:, :npt].T
         patterns_left[:, np.logical_not(self.flag1)] = np.NAN
         patterns_left = patterns_left.reshape((npt, *self.origin_shape1[1:]))
         #
-        patterns_right = np.zeros((npt, *self.rsp_data2.shape[1:]), dtype=self.dtype_np)
+
         patterns_right[:, self.flag2] = self._V[:npt]
         patterns_right[:, np.logical_not(self.flag2)] = np.NAN
         patterns_right = patterns_right.reshape((npt, *self.origin_shape2[1:]))
+
         return patterns_left, patterns_right
