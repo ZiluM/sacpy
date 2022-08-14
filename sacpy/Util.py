@@ -85,7 +85,10 @@ def _correct_type(data, dtype=np.float64):
         format data
     """
     if not isinstance(data, np.ndarray):
-        data1 = np.array(data, dtype=dtype)
+        if isinstance(data, xr.DataArray):
+            data1 = data.to_numpy()
+        else:
+            data1 = np.array(data)
     else:
         data1 = data
     return data1
@@ -137,6 +140,8 @@ def gradient_da(da, dim, method=0, delta=None):
             delta = 5
         elif dim == "lon":
             delta = 1.11e5 * np.cos(np.deg2rad(da["lat"]))
+        else:
+            delta = 1
     da1 = da.loc[{dim: dim_coord1}].assign_coords({dim: m_coord})
     da2 = da.loc[{dim: dim_coord2}].assign_coords({dim: m_coord})
     diff = (da1 - da2) / delta
