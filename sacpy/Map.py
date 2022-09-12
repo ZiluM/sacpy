@@ -216,7 +216,7 @@ def _contourf(self, *args, **kwargs):
     return m
 
 
-def _draw_ticks(self, extend, stepx=30, stepy=10, smallx=5, smally=5, bigx=10, bigy=10):
+def _draw_ticks(self, extend, stepx=30, stepy=10, smallx=5, smally=2.5, bigx=10, bigy=10):
     """ draw map ticks
 
     Args:
@@ -225,8 +225,13 @@ def _draw_ticks(self, extend, stepx=30, stepy=10, smallx=5, smally=5, bigx=10, b
         stepy (int, optional): big y step. Defaults to 10.
         xsmall (int, optional): x small step. Defaults to 5.
         ysmall (int, optional): y small step. Defaults to 5.
+        bigx/bigy (int, optional): Resolution in X and Y directions
     """
     [x1, x2, y1, y2] = extend
+    # if stepx is None:
+    #     stepx
+
+    # autoly calculate stepx,stepy,smallx,smally,bigx,bigy
     # cling to 10 times
     xs = x1 // bigx * bigx if x1 % bigx == 0 else (x1 // bigx + 1) * bigx
     xe = x2 // bigx * bigx
@@ -353,6 +358,21 @@ def _quiver(self, *args, **kwargs):
     return m
 
 
+def _xr_splot(self, ax=None, label=0, kw1={}, kw2={}):
+    if label == 0:
+        lon = "lon"
+        lat = "lat"
+    else:
+        lon = "longitude"
+        lat = "latitude"
+    if ax is None:
+        ax = plt.axes(projection=ccrs.PlateCarree(central_longitude=self[lon].mean().item()))
+    m = ax.scontourf(self[lon], self[lat], self.to_numpy(), **kw1)
+    ax.init_map(**kw2)
+    plt.colorbar(m)
+    return m, ax
+
+
 GeoAxesSubplot.scontourf = _contourf
 GeoAxesSubplot.scontour = _contour
 GeoAxesSubplot.draw_ticks = _draw_ticks
@@ -362,3 +382,4 @@ GeoAxesSubplot.spcolormesh = _pcolormesh
 GeoAxesSubplot._store_range = _store_range
 GeoAxesSubplot._get_extends = _get_extend
 GeoAxesSubplot.squiver = _quiver
+xr.DataArray.splot = _xr_splot
