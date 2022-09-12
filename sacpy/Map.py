@@ -36,6 +36,11 @@ def get_levels(data, percentile: int, num_level: int, zero_sym: bool) -> np.ndar
     # get min and max
     _max = np.nanpercentile(data, percentile)
     _min = np.nanpercentile(data, 100 - percentile)
+    if zero_sym is None:
+        if _min*_max <0:
+            zero_sym = True
+        else:
+            zero_sym = False
     # zero_sym :
     if zero_sym:
         max_real = np.max(np.abs([_max, _min]))
