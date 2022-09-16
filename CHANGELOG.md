@@ -30,9 +30,9 @@ Add EOF analysis
 
 Change Example Data
 
-## version 0.0.12 
+## version 0.0.12
 
-Fix a bug in XrTools 
+Fix a bug in XrTools
 
 Add Map.py for quick plot
 
@@ -44,6 +44,6 @@ Change example!
 
 Add SVD(MCA) analysis and visualization of LinReg in Jupyter.
 
+## version 0.0.15
 
-
-
+Add Map.py for test and new wrapper progress for Map.py and Linreg
