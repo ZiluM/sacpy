@@ -22,11 +22,16 @@ Sepcial thanks: Lifei Lin (Sun Yat-sen University) 's `repr_html.py` to visualiz
 
 ### Quick!
 
-For example, Sacpy is more than 60 times faster than the traditional regression analysis with Python (see **speed test**).
+For example, Sacpy is more than 60 times faster than the traditional regression analysis with Python (see **speed test**). The following is the time spent performing the same task. Sacpy is fastest.
+
+![](https://raw.githubusercontent.com/ZiluM/sacpy/master/pic/speed_test_00.png)
+
 
 ### Turn to climate data customization!
 
 Compatible with commonly used meteorological calculation libraries such as numpy and xarray.
+
+
 
 ### Concise code
 
@@ -34,6 +39,10 @@ You can finish drawing a following figure with just seven lines of code. see **e
 
 
 ![](https://raw.githubusercontent.com/ZiluM/sacpy/master/pic/one_test.png)
+
+You can use SVD/MCA to get the image below easily.
+
+![](https://raw.githubusercontent.com/ZiluM/sacpy/master/pic/SVD.png)
 
 ## Install and update
 
@@ -271,6 +280,44 @@ plt.savefig("../pic/one_test.png")
 Result:
 
 ![](https://raw.githubusercontent.com/ZiluM/sacpy/master/pic/one_test.png)
+
+
+## example6
+
+SVD(MCA) analysis.
+
+```Python
+import sacpy as scp
+import xarray as xr
+import matplotlib.pyplot as plt
+import numpy as np
+from xmca import array
+import sacpy.Map
+import cartopy.crs as ccrs
+
+# load data
+sst = scp.load_sst()['sst'].loc["1991":"2021", -20:30, 150:275]
+ssta = scp.get_anom(sst)
+u = scp.load_10mwind()['u']
+v = scp.load_10mwind()['v']
+
+uua = scp.get_anom(u)
+vua = scp.get_anom(v)
+uv = np.concatenate([np.array(uua)[...,np.newaxis],np.array(vua)[...,np.newaxis]],axis=-1)
+# calculation
+svd = scp.SVD(ssta,uv,complex=False)
+svd.solve()
+ptl, ptr = svd.get_pt(3)
+pcl,pcr = svd.get_pc(3)
+upt ,vpt = ptr[...,0] , ptr[...,1]
+sst_pt = ptl
+# plot progress, see example/SVD.ipynb
+```
+
+result:
+
+![](https://raw.githubusercontent.com/ZiluM/sacpy/master/pic/SVD.png)
+
 
 ## examples of concise
 
