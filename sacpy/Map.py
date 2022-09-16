@@ -57,8 +57,8 @@ def _store_range(self, x, y):
         x (np.ndarray): x 
         y (np.ndarray): y
     """
-    x = _correct_type(x)
-    y = _correct_type(y)
+    x= _correct_type(x)
+    y= _correct_type(y)
     if x is not None:
         # save to xrange
         if not hasattr(self, "xrange"):

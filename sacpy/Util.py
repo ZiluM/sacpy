@@ -4,8 +4,6 @@ import matplotlib as mpl
 import xarray as xr
 
 
-
-
 def convert_lon(lon: np.ndarray):
     """ Convert longitude to the range of [-180, 180]
 
@@ -76,6 +74,36 @@ def sig_scatter(ax, x: np.ndarray, y: np.ndarray, p: np.ndarray, threshold: floa
     return sc
 
 
+def _correct_type0(data, dtype=np.float64):
+    """ 
+
+    Args:
+        data (any): data to correct
+        dtype (any, optional): data format. Defaults to np.float64.
+
+    Returns:
+        format data
+    """
+    if not isinstance(data, np.ndarray):
+        if isinstance(data, xr.DataArray):
+            data1 = data.to_numpy()
+            # data = data.drop_duplicates()
+            coords = data.coords
+            dims = data.dims
+        else:
+            try:
+                data1 = np.array(data)
+                dims = None
+                coords = None
+            except:
+                raise TypeError(f"Can't convert {type(data)} to {np.ndarray}'")
+    else:
+        data1 = data
+        dims = None
+        coords = None
+    return data1,dims,coords
+
+
 def _correct_type(data, dtype=np.float64):
     """ 
 
@@ -90,7 +118,10 @@ def _correct_type(data, dtype=np.float64):
         if isinstance(data, xr.DataArray):
             data1 = data.to_numpy()
         else:
-            data1 = np.array(data)
+            try:
+                data1 = np.array(data)
+            except:
+                raise TypeError(f"Can't convert {type(data)} to {np.ndarray}'")
     else:
         data1 = data
     return data1

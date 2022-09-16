@@ -3,9 +3,14 @@ import numpy as np
 import xarray as xr
 from scipy.spatial.distance import cdist
 import scipy.stats as sts
-from .Util import _correct_type
+from .Util import _correct_type,_correct_type0
+from copy import copy, deepcopy
 
 EPS = 1e-6
+
+
+def gen_dataarray(data, coords):
+    return xr.DataArray(data=data, coords=coords)
 
 
 class LinReg:
@@ -32,13 +37,27 @@ class LinReg:
         #     x = np.array(x)
         # if isinstance(y, xr.DataArray):
         #     y = np.array(y)
-        x = _correct_type(x)
-        y = _correct_type(y)
+        x, xdims, xcoords = _correct_type0(x)
+        y, ydims, ycoords = _correct_type0(y)
+        # self.xdims, self.xcoords = xdims, xcoords
+        # self.ydims, self.ycoords = ydims, ycoords
+
+        # judge x.dim[0] and y.dim[0] length
         if x.shape[0] != y.shape[0]:
             raise ValueError(f"x.dim0 is {x.shape[0]} , y.dim0 is {y.shape[0]} ; not equal.")
         self.x = x
         self.y = y
-        self.slope, self.intcpt, self.corr, self.p_value = linear_reg(x, y)
+
+        slope, intcpt, corr, p_value = linear_reg(x, y)
+
+        # judge dataarray trans
+        if ydims is not None and ycoords is not None:
+            ycoords_m1 = {ydims[i]: ycoords[ydims[i]] for i in range(1, len(ydims))}
+            slope, intcpt, corr, p_value = map(lambda data: gen_dataarray(data, ycoords_m1),
+                                               [slope, intcpt, corr, p_value])
+            # slope = gen_dataarray(slope, ycoords_m1)
+        self.slope, self.intcpt, self.corr, self.p_value = \
+            slope, intcpt, corr, p_value
 
     def _repr_html_(self):
         """
@@ -71,8 +90,8 @@ class M2mLinReg():
         #     x = np.array(x)
         # if isinstance(y, xr.DataArray):
         #     y = np.array(y)
-        x = _correct_type(x)
-        y = _correct_type(y)
+        x, xdims, xcoords = _correct_type0(x)
+        y, ydims, ycoords = _correct_type0(y)
         if x.shape[0] != y.shape[0]:
             raise ValueError(f"x.dim0 is {x.shape[0]} , y.dim0 is {y.shape[0]} ; not equal.")
         Num0 = x.shape[0]
@@ -122,8 +141,8 @@ class MultLinReg:
         #     x = np.array(x)
         # if isinstance(y, xr.DataArray):
         #     y = np.array(y)
-        x = _correct_type(x)
-        y = _correct_type(y)
+        x, xdims, xcoords = _correct_type0(x)
+        y, ydims, ycoords = _correct_type0(y)
         if x.shape[0] != y.shape[0]:
             raise ValueError(f"x.dim0 is {x.shape[0]} , y.dim0 is {y.shape[0]} ; not equal.")
         self.x = x
@@ -132,6 +151,7 @@ class MultLinReg:
             self.slope, self.intcpt, self.R, self.pv_all, self.pv_i = multi_linreg(x, y)
         else:
             self.slope, self.intcpt, self.R, self.pv_all, self.pv_i = None, None, None, None
+        
         self.multi_corr = None
         self.part_corr = {}
 
