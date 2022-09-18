@@ -20,23 +20,19 @@ Sepcial thanks: Lifei Lin (Sun Yat-sen University) 's `repr_html.py` to visualiz
 
 ## Why choose Sacpy?
 
-### Quick!
+### Fast!
 
 For example, Sacpy is more than 60 times faster than the traditional regression analysis with Python (see **speed test**). The following is the time spent performing the same task. Sacpy is fastest.
 
 ![](https://raw.githubusercontent.com/ZiluM/sacpy/master/pic/speed_test_00.png)
 
-
 ### Turn to climate data customization!
 
 Compatible with commonly used meteorological calculation libraries such as numpy and xarray.
 
-
-
 ### Concise code
 
 You can finish drawing a following figure with just seven lines of code. see **examples of concise**.
-
 
 ![](https://raw.githubusercontent.com/ZiluM/sacpy/master/pic/one_test.png)
 
@@ -48,19 +44,19 @@ You can use SVD/MCA to get the image below easily.
 
 You can use pip to install.
 
-        pip install sacpy
+    pip install sacpy
 
 Or you can visit https://gitee.com/zilum/sacpy/tree/master/dist to download **.whl file**, then
 
-        pip install .whl_file
+    pip install .whl_file
 
-update: 
+update:
 
-        pip install --upgrade sacpy
+    pip install --upgrade sacpy
 
 or you can download **.whl** file and then install use ` pip install .whl_file`.
 
-## Speed 
+## Speed
 
 As a comparison, we use the  **corr**  function in the xarray library, **corrcoef** function in numpy library, cdist in scipy, apply_func in xarray  and **for-loop**. The time required to calculate the correlation coefficient between SSTA and nino3.4 for 50 times is shown in the figure below.
 
@@ -72,10 +68,10 @@ All in all, if we want to get p-value and correlation or slope, we only to choos
 
 ![](https://raw.githubusercontent.com/ZiluM/sacpy/master/pic/speed_test_00.png)
 
-
 ## Example
 
 ### example1
+
 Calculate the correlation between SST and nino3.4 index
 
 ```Python
@@ -109,6 +105,7 @@ plt.colorbar(m)
 plt.savefig("../pic/nino34.png",dpi=200)
 
 ```
+
 Result(For a detailed drawing process, see **example**):
 
 ![](https://raw.githubusercontent.com/ZiluM/sacpy/master/pic/nino34.png)
@@ -154,6 +151,7 @@ ax.init_map(stepx=50, ysmall=2.5)
 plt.colorbar(m)
 plt.savefig("../pic/MLR.png",dpi=200)
 ```
+
 Result(For a detailed drawing process, see **example**):
 
 ![](https://raw.githubusercontent.com/ZiluM/sacpy/master/pic/MLR.png)
@@ -281,7 +279,6 @@ Result:
 
 ![](https://raw.githubusercontent.com/ZiluM/sacpy/master/pic/one_test.png)
 
-
 ## example6
 
 SVD(MCA) analysis.
@@ -317,7 +314,6 @@ sst_pt = ptl
 result:
 
 ![](https://raw.githubusercontent.com/ZiluM/sacpy/master/pic/SVD.png)
-
 
 ## examples of concise
 
@@ -369,11 +365,10 @@ n = ax.sig_plot(lon,lat,p,color="k",marker="..")
 ax.init_map(stepx=50, ysmall=2.5)
 plt.colorbar(m)
 ```
+
 How wonderful, how concise !
 
-
 ## Acknowledgements
-
 
 Thank Prof. Feng Zhu (NUIST,https://fzhu2e.github.io/) for his guidance of this project.
 
