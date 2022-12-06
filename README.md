@@ -2,9 +2,9 @@
 
 **Sacpy**, an effecient Statistical Analysis tool for Climate or Meteorology data.
 
-Author : Zilu Meng
+Author : Zilu Meng 
 
-e-mail : mzll1202@163.com
+e-mail : mzll1202@163.com 
 
 github : https://github.com/ZiluM/sacpy
 
@@ -14,7 +14,7 @@ pypi : https://pypi.org/project/sacpy/
 
 examples or document :  https://github.com/ZiluM/sacpy/tree/master/examples or https://gitee.com/zilum/sacpy/tree/master/examples
 
-version : 0.0.14
+version : 0.0.14 (1)
 
 Sepcial thanks: Lifei Lin (Sun Yat-sen University) 's `repr_html.py` to visualize class in jupyter!
 
