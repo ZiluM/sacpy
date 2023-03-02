@@ -51,3 +51,8 @@ Add Map.py for test and new wrapper progress for Map.py and Linreg
 ## version 0.0.16
 
 Optimized support for xarray
+
+## version 0.0.17
+
+1. update mask function for LinReg 
+2. add shp mask function

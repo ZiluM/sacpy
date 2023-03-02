@@ -101,7 +101,7 @@ def _correct_type0(data, dtype=np.float64):
         data1 = data
         dims = None
         coords = None
-    return data1,dims,coords
+    return data1, dims, coords
 
 
 def _correct_type(data, dtype=np.float64):
@@ -164,7 +164,7 @@ def gradient_da(da, dim, method=0, delta=None):
         dim_coord1 = dim_coord[2:]
         dim_coord2 = dim_coord[:-2]
     m_coord = (dim_coord1.to_numpy() + dim_coord2.to_numpy()) / 2
-    # 没写完
+    # have finished
     if delta is None:
         # delta_dim = {"lon":111e3,"lat":111e3,"level":5}
         if dim == "lat":
@@ -179,3 +179,34 @@ def gradient_da(da, dim, method=0, delta=None):
     da2 = da.loc[{dim: dim_coord2}].assign_coords({dim: m_coord})
     diff = (da1 - da2) / delta
     return diff
+
+
+def shp_mask(shp, Dataarray: xr.DataArray, lat='lat', lon='lon'):
+    """
+    Args:
+        shp (geopandas.geodataframe.GeoDataFrame): shp geodata
+        Dataarray (xr.DataArray): data 
+        lat (str): y-axis name
+        lon (str): x-axis name
+
+    Returns:
+        masked data
+    """
+    try:
+        import geopandas as gpd
+    except ImportError:
+        raise ImportError("Can't import geopandas, please install through conda or pip")
+    try:
+        import rioxarray
+    except ImportError:
+        raise ImportError("Can't import rioxarray, please install through conda or pip")
+    try:
+        from shapely.geometry import mapping
+    except ImportError:
+        raise ImportError("Can't import shapely, please install through conda or pip")
+
+    Dataarray = Dataarray.copy()
+    Dataarray.rio.write_crs("epsg:4326", inplace=True)
+    Dataarray.rio.set_spatial_dims(x_dim=lat, y_dim=lon, inplace=True)
+    cliped = Dataarray.rio.clip(shp.geometry.apply(mapping), shp.crs, drop=False)
+    return cliped

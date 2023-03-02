@@ -3,7 +3,7 @@ import numpy as np
 import xarray as xr
 from scipy.spatial.distance import cdist
 import scipy.stats as sts
-from .Util import _correct_type,_correct_type0
+from .Util import _correct_type, _correct_type0
 from copy import copy, deepcopy
 
 EPS = 1e-6
@@ -39,8 +39,8 @@ class LinReg:
         #     y = np.array(y)
         x, xdims, xcoords = _correct_type0(x)
         y, ydims, ycoords = _correct_type0(y)
-        # self.xdims, self.xcoords = xdims, xcoords
-        # self.ydims, self.ycoords = ydims, ycoords
+        self.xdims, self.xcoords = xdims, xcoords
+        self.ydims, self.ycoords = ydims, ycoords
 
         # judge x.dim[0] and y.dim[0] length
         if x.shape[0] != y.shape[0]:
@@ -58,6 +58,17 @@ class LinReg:
             # slope = gen_dataarray(slope, ycoords_m1)
         self.slope, self.intcpt, self.corr, self.p_value = \
             slope, intcpt, corr, p_value
+
+    def mask(self, threshold=0.05):
+        masked = [data.copy() for data in [self.slope, self.intcpt, self.corr]]
+        if self.ydims is not None and self.ycoords is not None:  # xarray term
+            for i in range(3):
+                masked[i] = xr.where(self.p_value <= threshold, masked[i], np.NAN)
+        else:  # numpy
+            for i in range(3):
+                masked[i][self.p_value > threshold] = np.NAN
+        self.slope1, self.intcpt1, self.corr1 = masked
+        self.masked = True
 
     def _repr_html_(self):
         """
@@ -151,7 +162,7 @@ class MultLinReg:
             self.slope, self.intcpt, self.R, self.pv_all, self.pv_i = multi_linreg(x, y)
         else:
             self.slope, self.intcpt, self.R, self.pv_all, self.pv_i = None, None, None, None
-        
+
         self.multi_corr = None
         self.part_corr = {}
 
