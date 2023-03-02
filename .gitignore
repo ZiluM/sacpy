@@ -1,0 +1,17 @@
+# ignore /dist
+
+/sacpy.egg-info
+
+setup.py
+
+/.idea
+
+/sacpy/__pycache__/
+
+/sacpy/example/__pycache__/
+
+/build
+
+/test
+
+/Wechat_paper
