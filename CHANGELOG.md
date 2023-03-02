@@ -47,3 +47,7 @@ Add SVD(MCA) analysis and visualization of LinReg in Jupyter.
 ## version 0.0.15
 
 Add Map.py for test and new wrapper progress for Map.py and Linreg
+
+## version 0.0.16
+
+Optimized support for xarray
