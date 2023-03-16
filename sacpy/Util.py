@@ -5,13 +5,13 @@ import xarray as xr
 
 
 def convert_lon(lon: np.ndarray):
-    """ Convert longitude to the range of [-180, 180]
+    """ Convert longitude to the range of [-180, 180] (from xarray)
 
     Args:
         lon (np.ndarray): lon in [0,360]
 
     Returns:
-        lon (np.ndarray): lon in [-180 , 180]
+        lon (np.ndarray): lon in [-180 , 180] 
     """
     return (lon + 180) % 360 - 180
 

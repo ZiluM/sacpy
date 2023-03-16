@@ -14,7 +14,7 @@ def gen_dataarray(data, coords):
 
 
 class LinReg:
-    name = "LinReg"
+    name = "Linear Regression"
     """
     Simple linear regression
         y[idx] = slope[idx] * x + intcp[idx]
@@ -25,7 +25,7 @@ class LinReg:
         p_value (np.ndarray) : T test p value , shape = [*number]
     """
 
-    def __init__(self, x: np.ndarray, y: np.ndarray):
+    def __init__(self, x: np.ndarray or xr.DataArray, y: np.ndarray or xr.DataArray):
         """ Simple linear regression y[idx] = slope[idx] * x + intcp[idx]
 
         Args:
@@ -70,12 +70,12 @@ class LinReg:
         self.slope1, self.intcpt1, self.corr1 = masked
         self.masked = True
 
-    def _repr_html_(self):
-        """
-        show in jupyter
-        """
-        from .repr_html import res_repr_html
-        return (res_repr_html(self))
+    # def _repr_html_(self):
+    #     """
+    #     show in jupyter
+    #     """
+    #     from .repr_html import res_repr_html
+    #     return (res_repr_html(self))
 
     def __repr__(self) -> str:
         res = f"{self.name}, x.shape = {self.x.shape}, y.shape = {self.y.shape} "
@@ -85,7 +85,7 @@ class LinReg:
 
 
 class M2mLinReg():
-    name = "M2mLinReg"
+    name = "Multi2Multi_Linear_Regression"
 
     def __init__(self, x: np.ndarray, y: np.ndarray):
         """ calculate correlation of x[time,n_factor] and y[time,n_factor] and their p_value
@@ -117,12 +117,12 @@ class M2mLinReg():
         p_value[pv_cp < 0.5] = (p_value[pv_cp < 0.5]) * 2
         self.p_value = p_value
 
-    def _repr_html_(self):
-        """
-        show in jupyter
-        """
-        from .repr_html import res_repr_html
-        return (res_repr_html(self))
+    # def _repr_html_(self):
+    #     """
+    #     show in jupyter
+    #     """
+    #     from .repr_html import res_repr_html
+    #     return (res_repr_html(self))
 
 
 class MultLinReg:
@@ -182,12 +182,12 @@ class MultLinReg:
         self.part_corr[idx] = partial_corr(self.x, self.y, idx, mul_corr=self.multi_corr)
         return self.part_corr[idx]
 
-    def _repr_html_(self):
-        """
-        show in jupyter
-        """
-        from .repr_html import res_repr_html
-        return (res_repr_html(self))
+    # def _repr_html_(self):
+    #     """
+    #     show in jupyter
+    #     """
+    #     from .repr_html import res_repr_html
+    #     return (res_repr_html(self))
 
     def __repr__(self) -> str:
         res = f"{self.name}, x.shape = {self.x.shape}, y.shape = {self.y.shape} "

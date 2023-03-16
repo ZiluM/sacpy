@@ -14,5 +14,3 @@ def load_10mwind():
     """
 
     return xr.open_dataset(current_dir + "/data/example/NCEP_wind10m_5x5.nc")
-
-# load_sst()

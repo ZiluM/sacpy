@@ -229,8 +229,8 @@ def _draw_ticks(self, extend, stepx=30, stepy=10, smallx=5, smally=2.5, bigx=10,
         extend (list): extend of map [x1, x2, y1, y2]
         stepx (int, optional): big x step. Defaults to 30.
         stepy (int, optional): big y step. Defaults to 10.
-        xsmall (int, optional): x small step. Defaults to 5.
-        ysmall (int, optional): y small step. Defaults to 5.
+        smallx (int, optional): x small step. Defaults to 5.
+        smally (int, optional): y small step. Defaults to 5.
         bigx/bigy (int, optional): Resolution in X and Y directions
     """
     [x1, x2, y1, y2] = extend
@@ -390,3 +390,4 @@ GeoAxesSubplot._store_range = _store_range
 GeoAxesSubplot._get_extends = _get_extend
 GeoAxesSubplot.squiver = _quiver
 xr.DataArray.splot = _xr_splot
+
