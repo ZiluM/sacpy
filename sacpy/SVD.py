@@ -1,6 +1,7 @@
 import numpy as np
 import xarray as xr
 from .Util import _correct_type
+from .LinReg import LinReg
 
 EPS = 1e-5
 
@@ -11,7 +12,7 @@ class SVD():
     """
 
     def __init__(self, data1: np.ndarray, data2: np.ndarray, complex=False):
-        """ initiation of EOF
+        """ initiation of SVD
         Args:
             data1 and data2 (np.ndarray): shape (time, * space grid number)
         """
@@ -33,6 +34,7 @@ class SVD():
         # time length
         if data1.shape[0] != data2.shape[0]:
             raise ValueError("data1.time [%s] != data2.time [%s]" % (data1.shape[0], data2.shape[0]))
+        self._data = [data1, data2]
         self.tLen = data1.shape[0]
         # reshape (time, space)
         self.rsp_data1 = data1.reshape(self.tLen, -1)
@@ -72,13 +74,24 @@ class SVD():
 
     def get_varperc(self, npt):
         """ return percentile of variance eign"""
-        var_perc = self.eign[:npt] / np.sum(self.eign)
+        var_perc = (self.eign**2)[:npt] / np.sum(self.eign**2)
         return var_perc
 
     def get_pc(self, npt, norm="std"):
-        pc_left = self._U[:, :npt].T @ self._data1_noNan.T
-        pc_right = self._V[:, :npt].T @ self._data2_noNan.T
-        pc_left, pc_right = np.real(pc_left), np.real(pc_right)
+        """ get PC series of SVD
+
+        Args:
+            npt (Number): Pattern Nums
+            norm (str, optional): The way to normalize the PCs. Defaults to "std".
+
+        Returns:
+            left ec (np.ndarray) : shape = [npt, time]
+            right ec (np.ndarray) : shape = [npt, time]
+        """
+        pc_left = (self._data1_noNan @ self._U[:, :npt]).T
+        # pay attention to _V's defination
+        pc_right = (self._data2_noNan @ self._V.T[:, :npt]).T
+        # pc_left, pc_right = np.real(pc_left), np.real(pc_right)
         if norm == "std":
             self.pc_left_std = pc_left.std(axis=1)[:, np.newaxis]
             self.pc_right_std = pc_right.std(axis=1)[:, np.newaxis]
@@ -91,7 +104,15 @@ class SVD():
         return pc_left, pc_right
 
     def get_pt(self, npt, norm="std"):
-        #
+        """ Get SVD patterns
+
+        Args:
+            npt ( Number ): Patterns Numbers.
+            norm (str, optional): The way to normalize PCs. Defaults to "std".
+
+        Returns:
+            left patterns and right patterns: shape = [npt, *nspace]
+        """
         patterns_left = np.zeros((npt, *self.rsp_data1.shape[1:]), dtype=self.dtype_np)
         patterns_right = np.zeros((npt, *self.rsp_data2.shape[1:]), dtype=self.dtype_np)
         if norm == "std":
@@ -103,7 +124,7 @@ class SVD():
             patterns_right *= self.pc_right_std[:npt]
         else:
             pass
-        # 
+        #
         patterns_left[:, self.flag1] = self._U[:, :npt].T
         patterns_left[:, np.logical_not(self.flag1)] = np.NAN
         patterns_left = patterns_left.reshape((npt, *self.origin_shape1[1:]))
@@ -114,3 +135,65 @@ class SVD():
         patterns_right = patterns_right.reshape((npt, *self.origin_shape2[1:]))
 
         return patterns_left, patterns_right
+
+    def get_homogeneous_map(self, npt=3, norm="std"):
+        """ get SVD's Homogeneous_map
+
+        Args:
+            npt (int, optional): _description_. Defaults to 3.
+            norm (str, optional): _description_. Defaults to "std".
+
+        Returns:
+            left patterns and right patterns
+        """
+        pc_left, pc_right = self.get_pc(npt, norm=norm)
+        res_left = []
+        res_right = []
+        for i in range(npt):
+            pc_left1 = pc_left[i]
+            pc_right1 = pc_right[i]
+            pattern_left = LinReg(pc_left1, self._data[0]).intcpt
+            pattern_right = LinReg(pc_right1, self._data[1]).intcpt
+            res_left.append(pattern_left[np.newaxis])
+            res_right.append(pattern_right[np.newaxis])
+        res_left = np.concatenate(pattern_left, axis=0)
+        res_right = np.concatenate(pattern_right, axis=0)
+        return res_left, res_left
+
+    def get_heterogeneous_map(self, npt=3, norm="std"):
+        """ get SVD's Heterogenous Map
+
+        Args:
+            npt (int, optional): _description_. Defaults to 3.
+            norm (str, optional): _description_. Defaults to "std".
+
+        Returns:
+            left patterns and right patterns
+        """
+        pc_left, pc_right = self.get_pc(npt, norm=norm)
+        res_left = []
+        res_right = []
+        for i in range(npt):
+            pc_left1 = pc_left[i]
+            pc_right1 = pc_right[i]
+            pattern_left = LinReg(pc_left1, self._data[1]).intcpt
+            pattern_right = LinReg(pc_right1, self._data[0]).intcpt
+            res_left.append(pattern_left[np.newaxis])
+            res_right.append(pattern_right[np.newaxis])
+        res_left = np.concatenate(pattern_left, axis=0)
+        res_right = np.concatenate(pattern_right, axis=0)
+        return res_left, res_left
+
+    def get_var_contribution(self, npt=3):
+        """ The contributions of SVD modes to the left and right fields are obtained
+
+        Args:
+            npt (int, optional): _description_. Defaults to 3.
+
+        Returns:
+            _type_: _description_
+        """
+        pc_left, pc_right = self.get_pc(npt, norm=None)
+        left_var = (pc_left**2).sum(axis=1) / (self._data1_noNan**2).sum()
+        right_var = (pc_right**2).sum(axis=1) / (self._data2_noNan**2).sum()
+        return left_var, right_var
