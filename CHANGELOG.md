@@ -56,3 +56,4 @@ Optimized support for xarray
 
 1. update mask function for LinReg 
 2. add shp mask function
+3. correct SVD
