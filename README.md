@@ -12,7 +12,7 @@ gitee : https://gitee.com/zilum/sacpy
 
 pypi : https://pypi.org/project/sacpy/
 
-Document: https://zilum.github.io/Sacpy_Dox/
+Document: https://zilum.github.io/sacpy/
 
 examples or document :  https://github.com/ZiluM/sacpy/tree/main/examples or https://gitee.com/zilum/sacpy/tree/main/examples
 
