@@ -1,0 +1,589 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Sacpy: Statistic Analysis for Climate data in Python &#8212; Sacpy 0.16 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d" />
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'index';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installation" href="installation.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="#">
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/sacpy.png" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="_static/sacpy.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/QuickStart.html">Quick Start</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="Linreg.html">Linear Regression</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/LinReg.html">Univariate Linear Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/MLinReg.html">Multivariate Linear Regression</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/EOF.html">Empirical Orthogonal Function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/SVD.html">Maximum Covariance Analysis</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="XrTools.html">Tools for xarray</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/GetSMonth.html">Get Specific Months Data and annual mean</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/GetAnom.html">Get Anomaly Data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/MValueTTest.html">Mean Value T Test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/PlotFunction.html">Plot Function</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="usefulexmple.html">Useful Example</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/ENSO_next_year_influence.html">The impact of ENSO on the climate in the second year</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/IODI_nino34_ssta_partial.html">IOD’s impact after removing the impact of ENSO</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/Nino34RegSST.html">Regress SSTA on Nino3.4 Index</a></li>
+</ul>
+</li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/ZiluM/sacpy" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/ZiluM/sacpy/edit/main/index.rst" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/ZiluM/sacpy/issues/new?title=Issue%20on%20page%20%2Findex.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/index.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Sacpy: Statistic Analysis for Climate data in Python</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quick-installation">Quick Installation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-choose-sacpy">Why Choose Sacpy?</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fast">Fast!</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#turn-to-climate-data-customization">Turn to climate data customization!</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#concise-code">Concise code</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#documentation">Documentation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#user-guide">User Guide</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contact-us">Contact us</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#acknowledgements">Acknowledgements</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="sacpy-statistic-analysis-for-climate-data-in-python">
+<h1><cite>Sacpy</cite>: Statistic Analysis for Climate data in Python<a class="headerlink" href="#sacpy-statistic-analysis-for-climate-data-in-python" title="Permalink to this heading">#</a></h1>
+<p><strong>Sacpy</strong> (/Sæc’pai/) is an effecient Statistical Analysis tool (e.g. regression, EOF, MCA) for Climate and Meteorology data.
+<strong>Sacpy</strong> aims to provide a universal framework for climate data analysis.</p>
+<p>It provides a toolkit for</p>
+<ul class="simple">
+<li><p>Linear Regression (univariate and multivariate)</p></li>
+<li><p>Empirical Orthogonal Function (EOF)</p></li>
+<li><p>Maximum Covariance Analysis (MCA or SVD)</p></li>
+<li><p>Convenient Plots for Cartopy, Xarray</p></li>
+<li><p>Convenient Tools for Statistic Analysis</p></li>
+<li><p>Power spectrum analysis (under testing)</p></li>
+</ul>
+<p>For more details, please refer to the User Guide linked below.</p>
+<section id="quick-installation">
+<h2>Quick Installation<a class="headerlink" href="#quick-installation" title="Permalink to this heading">#</a></h2>
+<p>Use <strong>pip</strong> for Installation.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>sacpy
+</pre></div>
+</div>
+</section>
+<section id="why-choose-sacpy">
+<h2>Why Choose Sacpy?<a class="headerlink" href="#why-choose-sacpy" title="Permalink to this heading">#</a></h2>
+<section id="fast">
+<h3>Fast!<a class="headerlink" href="#fast" title="Permalink to this heading">#</a></h3>
+<p>For example, Sacpy is more than 60 times faster than the traditional regression analysis with Python. The following is the time spent performing the same task. Sacpy is fastest.</p>
+<a class="reference internal image-reference" href="_images/speed_test_00.png"><img alt="_images/speed_test_00.png" src="_images/speed_test_00.png" style="width: 600px;" /></a>
+</section>
+<section id="turn-to-climate-data-customization">
+<h3>Turn to climate data customization!<a class="headerlink" href="#turn-to-climate-data-customization" title="Permalink to this heading">#</a></h3>
+<p>Compatible with commonly used meteorological calculation libraries such as numpy and xarray.</p>
+</section>
+<section id="concise-code">
+<h3>Concise code<a class="headerlink" href="#concise-code" title="Permalink to this heading">#</a></h3>
+<p>You can finish drawing a following figure with just seven lines of code. see <strong>examples of concise</strong>.</p>
+<img alt="_images/one_test.png" src="_images/one_test.png" />
+</section>
+</section>
+<section id="documentation">
+<h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p>GitHub: <a class="github reference external" href="https://github.com/ZiluM/sacpy">ZiluM/sacpy</a></p></li>
+<li><p>Pypi: <a class="reference external" href="https://pypi.org/project/sacpy/">https://pypi.org/project/sacpy/</a></p></li>
+<li><p>Install: <a class="reference external" href="https://zilum.github.io/Sacpy_Dox/installation.html">https://zilum.github.io/Sacpy_Dox/installation.html</a></p></li>
+</ul>
+</section>
+<section id="user-guide">
+<h2>User Guide<a class="headerlink" href="#user-guide" title="Permalink to this heading">#</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#quick-install">Quick Install</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#install-sacpy-in-the-conda-environment">Install Sacpy in the Conda environment</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/QuickStart.html">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/QuickStart.html#import-useful-module">import useful module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/QuickStart.html#Load-Data">Load Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/QuickStart.html#Linear-Regression-and-Plot">Linear Regression and Plot</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Linreg.html">Linear Regression</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/LinReg.html">Univariate Linear Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/MLinReg.html">Multivariate Linear Regression</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/EOF.html">Empirical Orthogonal Function</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/EOF.html#Parameter">Parameter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/EOF.html#Method">Method</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/EOF.html#Example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/SVD.html">Maximum Covariance Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/SVD.html#Parameter">Parameter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/SVD.html#Method">Method</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/SVD.html#Example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="XrTools.html">Tools for xarray</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/GetSMonth.html">Get Specific Months Data and annual mean</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/GetAnom.html">Get Anomaly Data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/MValueTTest.html">Mean Value T Test</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/MValueTTest.html#one_mean_test">one_mean_test</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/MValueTTest.html#two_mean_test">two_mean_test</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/PlotFunction.html">Plot Function</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/PlotFunction.html#get_levels">get_levels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/PlotFunction.html#GeoAxesSubplot.scontourf">GeoAxesSubplot.scontourf</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/PlotFunction.html#GeoAxesSubplot.scontour">GeoAxesSubplot.scontour</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/PlotFunction.html#GeoAxesSubplot.sig_plot">GeoAxesSubplot.sig_plot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/PlotFunction.html#GeoAxesSubplot.spcolormesh">GeoAxesSubplot.spcolormesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/PlotFunction.html#GeoAxesSubplot.squive">GeoAxesSubplot.squive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/PlotFunction.html#GeoAxesSubplot.draw_ticks">GeoAxesSubplot.draw_ticks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/PlotFunction.html#GeoAxesSubplot.init_map">GeoAxesSubplot.init_map</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/PlotFunction.html#xr.Dataarray.splot">xr.Dataarray.splot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/PlotFunction.html#Plot-Example">Plot Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="usefulexmple.html">Useful Example</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/ENSO_next_year_influence.html">The impact of ENSO on the climate in the second year</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/IODI_nino34_ssta_partial.html">IOD’s impact after removing the impact of ENSO</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/Nino34RegSST.html">Regress SSTA on Nino3.4 Index</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="contact-us">
+<h2>Contact us<a class="headerlink" href="#contact-us" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Author: Zilu Meng</p></li>
+<li><p>e-mail: <a class="reference external" href="mailto:zilumeng&#37;&#52;&#48;uw&#46;edu">zilumeng<span>&#64;</span>uw<span>&#46;</span>edu</a></p></li>
+</ul>
+</section>
+<section id="acknowledgements">
+<h2>Acknowledgements<a class="headerlink" href="#acknowledgements" title="Permalink to this heading">#</a></h2>
+<p>Thanks for Dr.Feng Zhu’s (<a class="reference external" href="https://fzhu2e.github.io">https://fzhu2e.github.io</a>) help in this project!</p>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+                <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="right-next"
+       href="installation.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Installation</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quick-installation">Quick Installation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-choose-sacpy">Why Choose Sacpy?</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fast">Fast!</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#turn-to-climate-data-customization">Turn to climate data customization!</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#concise-code">Concise code</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#documentation">Documentation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#user-guide">User Guide</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contact-us">Contact us</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#acknowledgements">Acknowledgements</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            <div class="bd-footer-content__inner">
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By ZiluMeng
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2023, ZiluMeng.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div></div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
