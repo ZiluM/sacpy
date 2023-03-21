@@ -14,7 +14,7 @@ pypi : https://pypi.org/project/sacpy/
 
 Document: https://zilum.github.io/Sacpy_Dox/
 
-examples or document :  https://github.com/ZiluM/sacpy/tree/master/examples or https://gitee.com/zilum/sacpy/tree/master/examples
+examples or document :  https://github.com/ZiluM/sacpy/tree/main/examples or https://gitee.com/zilum/sacpy/tree/main/examples
 
 version : 0.0.17
 
@@ -26,7 +26,7 @@ Sepcial thanks: Lifei Lin (Sun Yat-sen University) 's `repr_html.py` to visualiz
 
 For example, Sacpy is more than 60 times faster than the traditional regression analysis with Python (see **speed test**). The following is the time spent performing the same task. Sacpy is fastest.
 
-![](https://raw.githubusercontent.com/ZiluM/sacpy/master/pic/speed_test_00.png)
+![](https://raw.githubusercontent.com/ZiluM/sacpy/main/pic/speed_test_00.png)
 
 ### Turn to climate data customization!
 
@@ -36,11 +36,11 @@ Compatible with commonly used meteorological calculation libraries such as numpy
 
 You can finish drawing a following figure with just seven lines of code. see **examples of concise**.
 
-![](https://raw.githubusercontent.com/ZiluM/sacpy/master/pic/one_test.png)
+![](https://raw.githubusercontent.com/ZiluM/sacpy/main/pic/one_test.png)
 
 You can use SVD/MCA to get the image below easily.
 
-![](https://raw.githubusercontent.com/ZiluM/sacpy/master/pic/SVD.png)
+![](https://raw.githubusercontent.com/ZiluM/sacpy/main/pic/SVD.png)
 
 ## Install and update
 
@@ -48,7 +48,7 @@ You can use pip to install.
 
     pip install sacpy
 
-Or you can visit https://gitee.com/zilum/sacpy/tree/master/dist to download **.whl file**, then
+Or you can visit https://gitee.com/zilum/sacpy/tree/main/dist to download **.whl file**, then
 
     pip install .whl_file
 
@@ -68,7 +68,7 @@ Moreover, xarray and numpy can not return the **p value**. We can simply check t
 
 All in all, if we want to get p-value and correlation or slope, we only to choose **Sacpy is 60 times faster than before**.
 
-![](https://raw.githubusercontent.com/ZiluM/sacpy/master/pic/speed_test_00.png)
+![](https://raw.githubusercontent.com/ZiluM/sacpy/main/pic/speed_test_00.png)
 
 ## Example
 
@@ -110,7 +110,7 @@ plt.savefig("../pic/nino34.png",dpi=200)
 
 Result(For a detailed drawing process, see **example**):
 
-![](https://raw.githubusercontent.com/ZiluM/sacpy/master/pic/nino34.png)
+![](https://raw.githubusercontent.com/ZiluM/sacpy/main/pic/nino34.png)
 
 ### example2
 
@@ -156,7 +156,7 @@ plt.savefig("../pic/MLR.png",dpi=200)
 
 Result(For a detailed drawing process, see **example**):
 
-![](https://raw.githubusercontent.com/ZiluM/sacpy/master/pic/MLR.png)
+![](https://raw.githubusercontent.com/ZiluM/sacpy/main/pic/MLR.png)
 
 ### example3
 
@@ -199,7 +199,7 @@ plt.savefig("../pic/ENSO_Next_year_JJA.png",dpi=300)
 
 ```
 
-![](https://raw.githubusercontent.com/ZiluM/sacpy/master/pic/ENSO_Next_year_JJA.png)
+![](https://raw.githubusercontent.com/ZiluM/sacpy/main/pic/ENSO_Next_year_JJA.png)
 
 Same as **Indian Ocean Capacitor Effect on Indo–Western Pacific Climate during the Summer following El Niño** (Xie et al.), the El Nino will lead to Indian ocean warming in next year JJA.
 
@@ -243,7 +243,7 @@ fig.colorbar(m1,cax=cb_ax,orientation="horizontal")
 plt.savefig("../pic/eof_ana.png",dpi=300)
 ```
 
-![](https://raw.githubusercontent.com/ZiluM/sacpy/master/pic/eof_ana.png)
+![](https://raw.githubusercontent.com/ZiluM/sacpy/main/pic/eof_ana.png)
 
 ## example5
 
@@ -279,7 +279,7 @@ plt.savefig("../pic/one_test.png")
 
 Result:
 
-![](https://raw.githubusercontent.com/ZiluM/sacpy/master/pic/one_test.png)
+![](https://raw.githubusercontent.com/ZiluM/sacpy/main/pic/one_test.png)
 
 ## example6
 
