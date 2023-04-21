@@ -10,9 +10,13 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import xarray as xr
 from .Util import _correct_type
+import matplotlib as mpl
+
+mpl.rcParams['font.family'] = 'Times New Roman'
+mpl.rcParams['image.cmap'] = 'RdBu_r'
 # set font to TNR
-plt.rc('font', family='Times New Roman')
-plt.set_cmap("RdBu_r")
+# plt.rc('font', family='Times New Roman')
+# plt.set_cmap("RdBu_r")
 
 
 def get_levels(data, percentile: int = 98, num_level: int = 13, zero_sym: bool = True) -> np.ndarray:

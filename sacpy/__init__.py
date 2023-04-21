@@ -10,4 +10,4 @@ from .SVD import SVD
 
 
 __author__ = "Zilu Meng"
-__email__ = "mzll1202@163.com"
+__email__ = "zilumeng@uw.edu"

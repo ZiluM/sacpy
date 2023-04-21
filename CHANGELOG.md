@@ -57,3 +57,8 @@ Optimized support for xarray
 1. update mask function for LinReg 
 2. add shp mask function
 3. correct SVD
+
+## version 0.0.18
+
+1. add new function of EOF
+2. correct some errors of EOF and SVD 

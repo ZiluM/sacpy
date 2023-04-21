@@ -152,13 +152,13 @@ class SVD():
         for i in range(npt):
             pc_left1 = pc_left[i]
             pc_right1 = pc_right[i]
-            pattern_left = LinReg(pc_left1, self._data[0]).intcpt
-            pattern_right = LinReg(pc_right1, self._data[1]).intcpt
+            pattern_left = LinReg(pc_left1, self._data[0]).slope
+            pattern_right = LinReg(pc_right1, self._data[1]).slope
             res_left.append(pattern_left[np.newaxis])
             res_right.append(pattern_right[np.newaxis])
-        res_left = np.concatenate(pattern_left, axis=0)
-        res_right = np.concatenate(pattern_right, axis=0)
-        return res_left, res_left
+        res_left = np.concatenate(res_left, axis=0)
+        res_right = np.concatenate(res_right, axis=0)
+        return res_left, res_right
 
     def get_heterogeneous_map(self, npt=3, norm="std"):
         """ get SVD's Heterogenous Map
@@ -176,13 +176,13 @@ class SVD():
         for i in range(npt):
             pc_left1 = pc_left[i]
             pc_right1 = pc_right[i]
-            pattern_left = LinReg(pc_left1, self._data[1]).intcpt
-            pattern_right = LinReg(pc_right1, self._data[0]).intcpt
+            pattern_left = LinReg(pc_left1, self._data[0]).slope
+            pattern_right = LinReg(pc_right1, self._data[1]).slope
             res_left.append(pattern_left[np.newaxis])
             res_right.append(pattern_right[np.newaxis])
-        res_left = np.concatenate(pattern_left, axis=0)
-        res_right = np.concatenate(pattern_right, axis=0)
-        return res_left, res_left
+        res_left = np.concatenate(res_left, axis=0)
+        res_right = np.concatenate(res_right, axis=0)
+        return res_left, res_right
 
     def get_var_contribution(self, npt=3):
         """ The contributions of SVD modes to the left and right fields are obtained

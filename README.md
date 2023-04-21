@@ -4,11 +4,9 @@
 
 Author : Zilu Meng 
 
-e-mail : mzll1202@163.com 
+e-mail : zilumeng@uw.edu
 
 github : https://github.com/ZiluM/sacpy
-
-gitee : https://gitee.com/zilum/sacpy
 
 pypi : https://pypi.org/project/sacpy/
 
@@ -16,7 +14,7 @@ Document: https://zilum.github.io/sacpy/
 
 examples or document :  https://github.com/ZiluM/sacpy/tree/main/examples or https://gitee.com/zilum/sacpy/tree/main/examples
 
-version : 0.0.17
+version : 0.0.18
 
 Sepcial thanks: Lifei Lin (Sun Yat-sen University) 's `repr_html.py` to visualize class in jupyter!
 

@@ -3,6 +3,7 @@ import scipy.stats as sts
 import xarray as xr
 from .LinReg import LinReg
 import time
+from time import gmtime, strftime
 
 EPS = 1e-5
 
@@ -66,7 +67,7 @@ class EOF:
         # print("Start EOF")
         # ================================= EOF process by SVD===============================
         if st is True:
-            print(f"=====EOF Start at {time.time()}======")
+            print("=====EOF Start at {}======".format(strftime("%Y-%m-%d %H:%M:%S", gmtime())))
         if method == "svd":
             Xor = 1 / np.sqrt(dim0_len - 1) * data_nN
             U, Sigma, VT = np.linalg.svd(Xor)
@@ -74,9 +75,9 @@ class EOF:
             eign = Sigma
             dim_min = np.min([dim0_len, dim1_len])
         # ================================= EOF process end===============================
-        elif method == "eign":
+        elif method == "eig":
             if dim0_len > dim1_len:  # time > space
-                print(1)
+                # print(1)
                 dim_min = dim1_len
                 # get coviance (space_noNan,space_noNan)
                 cov = data_nN.T @ data_nN
@@ -86,7 +87,7 @@ class EOF:
                 e_vector = e_vector.T  # [i]&[i,:]
 
             else:  # space > time
-                print(2)
+                # print(2)
                 # get coviance
                 dim_min = dim0_len
                 # get cov, (time,time)
@@ -96,7 +97,7 @@ class EOF:
                 # trans
                 e_vector = (data_nN.T @ e_vector_s / np.sqrt(np.abs(eign))).T[:dim_min]
         if st is True:
-            print(f"=====EOF End at  {time.time()}======")
+            print("=====EOF End at  {}======".format(strftime("%Y-%m-%d %H:%M:%S", gmtime())))
         # save
         # print("EOF End")
         self.e_vector = e_vector
@@ -109,6 +110,7 @@ class EOF:
         patterns[:, np.logical_not(self.flag)] = np.NAN
         # patterns = patterns.reshape((dim_min, *self.origin_shape[1:]))
         # save
+        self.patterns_num = patterns.shape[0]
         self.patterns = patterns
 
     def get_eign(self):
@@ -224,34 +226,71 @@ class EOF:
             pc_proj = pc_proj / self.pc.std(axis=1)[..., np.newaxis]
         return pc_proj
 
-    def decoder(self):
-        pass
+    # def decoder(self):
+    #     pass
 
-    def pattern_corr(self, data: np.ndarray, npt=None):
-        """  calculate pattern correlation of extra data and patterns
+    def load_pt(self,patterns):
+        """ load space patterns of extral data rather than from solving
 
         Args:
-            data (np.ndarray): shape (time, * space number)
-            npt (int, optional): number of spatial patterns . Defaults to None.
-
-        Returns:
-            corr , p_value: corr and p_value shape (npt,data_time)
+            patterns (np.ndarray): shape = (npt, *nspace)
         """
-        if npt is None:
-            npt = self.dim_min
-        # mask data
-        data_noNan = data.reshape(data.shape[0], -1)[:, self.flag]
-        # get need e_vector
-        need_evctor = self.e_vector[:npt]
-        # free degree
-        N = need_evctor.shape[1] - 2
-        # normalize data
-        norm_evctor = (need_evctor - need_evctor.mean(axis=1)[..., np.newaxis]) / \
-                      (need_evctor.std(axis=1)[..., np.newaxis])
-        data_noNan_norm = (data_noNan - data_noNan.mean(axis=1)[..., np.newaxis]) / \
-                          (data_noNan.std(axis=1)[..., np.newaxis])
+        patterns_num = patterns.shape[0]
+        self.patterns_num = patterns_num
+        self.patterns = patterns
+    
+    def decoder(self,pcs):
+        """
+        
+        project pcs on patterns to get original fields
 
-        corr = norm_evctor @ data_noNan_norm.T / (N + 2)  # npatterns,data_time
-        t_value = np.abs(corr / (EPS + np.sqrt(1 - corr**2)) * np.sqrt(N))
-        p_value = sts.t.sf(t_value, df=N - 2) * 2
-        return corr, p_value
+        """
+        pcs_num = pcs.shape[0]
+        if pcs_num > self.patterns_num:
+            raise ValueError(f"PC Number is {pcs_num}, larger than PT Number = {self.patterns_num}")
+        # else:
+        proj_pt = self.patterns[:pcs_num]
+        # projection use einsum
+        # i: pcs_num, j: time
+        # k...: *space patterns shape
+        fields = np.einsum('ij,ik...->jk...', pcs, proj_pt)
+        # fields: time, *space patterns shape
+        return fields
+
+
+
+
+
+
+
+        
+
+
+    # def pattern_corr(self, data: np.ndarray, npt=None):
+    #     """  calculate pattern correlation of extra data and patterns
+
+    #     Args:
+    #         data (np.ndarray): shape (time, * space number)
+    #         npt (int, optional): number of spatial patterns . Defaults to None.
+
+    #     Returns:
+    #         corr , p_value: corr and p_value shape (npt,data_time)
+    #     """
+    #     if npt is None:
+    #         npt = self.dim_min
+    #     # mask data
+    #     data_noNan = data.reshape(data.shape[0], -1)[:, self.flag]
+    #     # get need e_vector
+    #     need_evctor = self.e_vector[:npt]
+    #     # free degree
+    #     N = need_evctor.shape[1] - 2
+    #     # normalize data
+    #     norm_evctor = (need_evctor - need_evctor.mean(axis=1)[..., np.newaxis]) / \
+    #                   (need_evctor.std(axis=1)[..., np.newaxis])
+    #     data_noNan_norm = (data_noNan - data_noNan.mean(axis=1)[..., np.newaxis]) / \
+    #                       (data_noNan.std(axis=1)[..., np.newaxis])
+
+    #     corr = norm_evctor @ data_noNan_norm.T / (N + 2)  # npatterns,data_time
+    #     t_value = np.abs(corr / (EPS + np.sqrt(1 - corr**2)) * np.sqrt(N))
+    #     p_value = sts.t.sf(t_value, df=N - 2) * 2
+    #     return corr, p_value
