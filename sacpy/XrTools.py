@@ -24,7 +24,7 @@ def _deTrend(array: np.ndarray):
     return res
 
 
-def get_anom(DaArray: xr.DataArray, method=0):
+def get_anom(DaArray: xr.DataArray, method=0,freq="month",time_coords="time"):
     """ Get climate data anomaly
     Args:
         DaArray (xr.DataArray): shape = (time, *number) original Dataarray
@@ -38,12 +38,18 @@ def get_anom(DaArray: xr.DataArray, method=0):
     """
     if not isinstance(DaArray, xr.DataArray):
         raise TypeError("'xr.DataArray' input is required, not the %s" % (type(DaArray)))
-    if not "time" in list(DaArray.coords.keys()):
-        raise TypeError("DaArray must have coords 'time' !")
-    if method == 0:
-        anom = DaArray.groupby("time.month") - DaArray.groupby("time.month").mean()
-    if method == 1:
-        anom = DaArray.groupby("time.month").map(_deTrend)
+    if not time_coords in list(DaArray.coords.keys()):
+        raise TypeError(f"DaArray must have coords {time_coords}")
+    if freq == "month":
+        if method == 0:
+            anom = DaArray.groupby("time.month") - DaArray.groupby("time.month").mean()
+        elif method == 1:
+            anom = DaArray.groupby("time.month").map(_deTrend)
+    elif freq == "day":
+        if method == 0:
+            anom = DaArray.groupby("time.day") - DaArray.groupby("time.day").mean()
+        elif method == 1:
+            anom = DaArray.groupby("time.day").map(_deTrend)
 
     return anom
 

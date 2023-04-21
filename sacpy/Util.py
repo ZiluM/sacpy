@@ -4,6 +4,9 @@ import matplotlib as mpl
 import xarray as xr
 
 
+def gen_dataarray(data, coords):
+    return xr.DataArray(data=data, coords=coords)
+
 def convert_lon(lon: np.ndarray):
     """ Convert longitude to the range of [-180, 180] (from xarray)
 

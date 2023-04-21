@@ -83,6 +83,18 @@ class LinReg:
 
     __str__ = __repr__
 
+class SpaceCorr():
+    name = "Space Correlation"
+    def __init__(self,x,y) -> None:
+        num = x.shape[0]
+        x0 = x.reshape((x.shape[0], -1)).T
+        y0 = y.reshape((y.shape[0], -1)).T
+        # corr = 1 - cdist(x, y, "correlation")
+        covar = x0.T @ y0 / (num-1)
+        corr = covar / y0.std(axis=1) / x0.std(axis=1)
+        self.corr = corr
+
+
 
 class M2mLinReg():
     name = "Multi2Multi_Linear_Regression"

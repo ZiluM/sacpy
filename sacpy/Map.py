@@ -390,4 +390,3 @@ GeoAxesSubplot._store_range = _store_range
 GeoAxesSubplot._get_extends = _get_extend
 GeoAxesSubplot.squiver = _quiver
 xr.DataArray.splot = _xr_splot
-
