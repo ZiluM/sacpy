@@ -4,6 +4,7 @@ import xarray as xr
 from .LinReg import LinReg
 import time
 from time import gmtime, strftime
+import dask.array as dsa
 
 EPS = 1e-5
 
@@ -53,10 +54,10 @@ class EOF:
     # def _mask_extra_data(self,data):
     #     flag = np.isnan(data0).sum(axis=0) == 0
 
-    def solve(self, method="eig",st=False):
+    def solve(self, method="eig",st=False,chunks=(100, 100)):
         """ solve the EOF
         """
-        if method not in ['eig', 'svd']:
+        if method not in ['eig', 'svd','dask_svd']:
             raise ValueError(f"method must be 'eig' or 'svd', not {method}")
         # mask data
         self._mask_nan()
@@ -96,6 +97,13 @@ class EOF:
                 eign, e_vector_s = np.linalg.eig(cov)  # (dim_min) ; (dim_min , dim_min) [i]&[:,i]
                 # trans
                 e_vector = (data_nN.T @ e_vector_s / np.sqrt(np.abs(eign))).T[:dim_min]
+        elif method == "dask_svd":
+            Xor = 1 / np.sqrt(dim0_len - 1) * data_nN
+            Xor = dsa.from_array(Xor, chunks=chunks)
+            dim_min = np.min([dim0_len, dim1_len])
+            U, Sigma, V = dsa.linalg.svd_compressed(Xor, k=dim_min)
+            e_vector = np.array(V.compute())
+            eign = np.array(Sigma.compute())
         if st is True:
             print("=====EOF End at  {}======".format(strftime("%Y-%m-%d %H:%M:%S", gmtime())))
         # save
