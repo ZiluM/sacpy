@@ -5,7 +5,7 @@ from .Util import convert_lon, reverse_lon, sig_scatter
 from .load_sst import load_sst,load_10mwind
 from .EOF import EOF
 from .linger_cal import linear_reg, multi_linreg, multi_corr, partial_corr
-from .SigTest import one_mean_test, two_mean_test
+from .SigTest import one_mean_test, two_mean_test,STMV
 from .SVD import SVD
 
 
