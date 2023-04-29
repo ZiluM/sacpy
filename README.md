@@ -12,11 +12,7 @@ pypi : https://pypi.org/project/sacpy/
 
 Document: https://zilum.github.io/sacpy/
 
-examples or document :  https://github.com/ZiluM/sacpy/tree/main/examples or https://gitee.com/zilum/sacpy/tree/main/examples
-
-version : 0.0.18
-
-Sepcial thanks: Lifei Lin (Sun Yat-sen University) 's `repr_html.py` to visualize class in jupyter!
+version : 0.0.19
 
 ## Why choose Sacpy?
 
@@ -88,11 +84,11 @@ ssta = scp.get_anom(sst,method=1)
 # calculate Nino3.4
 Nino34 = ssta.loc[:,-5:5,190:240].mean(axis=(1,2))
 # regression
-linreg = scp.LinReg(np.array(Nino34),np.array(ssta))
+linreg = scp.LinReg(Nino34,ssta)
 # plot
 fig = plt.figure(figsize=[7, 3])
 ax = plt.axes(projection=ccrs.PlateCarree(central_longitude=180))
-lon ,lat = np.array(ssta.lon) , np.array(ssta.lat)
+lon ,lat = ssta.lon , ssta.lat
 # shading
 m = ax.scontourf(lon,lat,linreg.corr)
 # significant plot
@@ -133,7 +129,7 @@ IODI = +IODW - IODE
 # get x
 X = np.vstack([np.array(Nino34),np.array(IODI)]).T
 # multiple linear regression
-MLR = scp.MultLinReg(X,np.array(ssta))
+MLR = scp.MultLinReg(X,ssta)
 
 # plot IOD's effect
 import sacpy.Map
@@ -142,7 +138,7 @@ import cartopy.crs as ccrs
 
 fig = plt.figure(figsize=[7, 3])
 ax = plt.axes(projection=ccrs.PlateCarree(central_longitude=180))
-lon ,lat = np.array(ssta.lon) , np.array(ssta.lat)
+lon ,lat = ssta.lon , ssta.lat
 m = ax.scontourf(lon,lat,MLR.slope[1])
 # significant plot
 n = ax.sig_plot(lon,lat,MLR.pv_i[1],color="k",marker="..")
@@ -180,7 +176,7 @@ DJF_nino34 = scp.XrTools.spec_moth_yrmean(Nino34,[12,1,2])
 JJA_ssta = scp.XrTools.spec_moth_yrmean(ssta, [6,7,8])
 
 # regression
-reg = scp.LinReg(np.array(DJF_nino34)[:-1], np.array(JJA_ssta))
+reg = scp.LinReg(DJF_nino34[:-1], JJA_ssta)
 # plot
 import cartopy.crs as ccrs
 import sacpy.Map
@@ -261,7 +257,7 @@ Nino34 = ssta_djf.loc[:, -5:5, 190:240].mean(axis=(1, 2))
 # select year of Super El Nino
 select = Nino34 >= 1
 ssta_sl = ssta_djf[select]
-mean, pv = scp.one_mean_test(np.array(ssta_sl))
+mean, pv = scp.one_mean_test(ssta_sl)
 # plot
 import sacpy.Map
 import cartopy.crs as ccrs
@@ -359,7 +355,7 @@ import sacpy.Map
 import cartopy.crs as ccrs
 fig = plt.figure(figsize=[7, 3])
 ax = plt.axes(projection=ccrs.PlateCarree(central_longitude=180))
-lon ,lat = np.array(ssta.lon) , np.array(ssta.lat)
+lon ,lat = ssta.lon , ssta.lat
 m = ax.scontourf(lon,lat,rvalue)
 n = ax.sig_plot(lon,lat,p,color="k",marker="..")
 ax.init_map(stepx=50, ysmall=2.5)
@@ -373,3 +369,5 @@ How wonderful, how concise !
 Thank Prof. Feng Zhu (NUIST,https://fzhu2e.github.io/) for his guidance of this project.
 
 Thank for Prof. Tim Li (University of Hawaii at Mānoa, http://iprc.soest.hawaii.edu/people/li.php) ,Prof. Lin Chen (NUIST, https://faculty.nuist.edu.cn/chenlin12/zh_CN/index.htm) and Dr. Ming Sun (NUIST) 's help.
+
+Sepcial thanks: Lifei Lin (Sun Yat-sen University) 's `repr_html.py` to visualize class in jupyter!
