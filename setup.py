@@ -10,14 +10,14 @@ long_des = long_des1 + "\n\n" + long_des2
 
 print(find_packages())
 setup(name="sacpy",
-      version="0.0.18",
+      version="0.0.19",
       url="https://github.com/ZiluM/sacpy",
       description="A repaid Statistical Analysis tool for Climate or Meteorology data.",
       py_modules=["sacpy"],
       include_package_data=True,
       keywords="meteorology data statistic climate",
       author="Zilu Meng",
-      author_email="mzll1202@163.com",
+      author_email="zilumeng@uw.edu",
       install_requires=["numpy", "scipy", "xarray"],
       package_data={'sacpy': ['data/example/HadISST_sst_5x5.nc','data/example/NCEP_wind10m_5x5.nc']},
       packages=find_packages(),
