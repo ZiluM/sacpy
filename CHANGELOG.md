@@ -62,3 +62,8 @@ Optimized support for xarray
 
 1. add new function of EOF
 2. correct some errors of EOF and SVD 
+
+## version 0.0.19 
+
+1. add new function for Map
+2. fix some errors of Map
