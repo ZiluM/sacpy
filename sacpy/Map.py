@@ -226,7 +226,7 @@ def _contourf(self, *args, **kwargs):
     return m
 
 
-def _draw_ticks(self, extend, stepx=30, stepy=10, smallx=5, smally=2.5, bigx=10, bigy=10):
+def _draw_ticks(self, extend, stepx=None, stepy=None, smallx=None, smally=None, bigx=None, bigy=None):
     """ draw map ticks
 
     Args:
@@ -237,7 +237,24 @@ def _draw_ticks(self, extend, stepx=30, stepy=10, smallx=5, smally=2.5, bigx=10,
         smally (int, optional): y small step. Defaults to 5.
         bigx/bigy (int, optional): Resolution in X and Y directions
     """
+    intend_ls = np.array([2, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60])
     [x1, x2, y1, y2] = extend
+    delta_x = (x2 - x1) / intend_ls
+    delta_y = (y2 - y1) / intend_ls
+    if stepx is None:
+        idx = np.argmin(np.abs(delta_x - 7))
+        stepx = intend_ls[idx]
+    if stepy is None:
+        idy = np.argmin(np.abs(delta_y - 7))
+        stepy = intend_ls[idy]
+    if smallx is None:
+        smallx = stepx / 5 if stepx != 4 else stepx / 5
+    if smally is None:
+        smally = stepy / 5 if stepy != 4 else stepy / 5
+    if bigx is None:
+        bigx = 10 if stepx != 2 else 5
+    if bigy is None:
+        bigy = 10 if stepy != 2 else 5
     # if stepx is None:
     #     stepx
 
@@ -317,6 +334,30 @@ def _sig_ctrf(self, x, y, pvalue, thrshd=0.05, marker="..", color=None):
     return res
 
 
+def _sig_ctrf1(self, x, y, pvalue, thrshd=0.05, marker="..", color=None):
+    """ Significance test dot
+
+    Args:
+        x (np.ndarray): x
+        y (np.ndarray): y
+        pvalue (np.ndarray): p value
+        thrshd (float, optional): threshold of pvalue. Defaults to 0.05.
+        marker (str, optional): mark of Significance test dot. Defaults to "..".
+    """
+    res = self.contourf(x,
+                        y,
+                        pvalue,
+                        levels=[0, thrshd, 1],
+                        zorder=1,
+                        hatches=[marker, None],
+                        colors="None")
+    # set color
+    if color is not None:
+        for collection in res.collections:
+            collection.set_linewidth(0.)
+            collection.set_edgecolor(color)
+    return res
+
 def _pcolormesh(self, *args, **kwargs):
     """ new pcolormesh
     """
@@ -394,3 +435,4 @@ GeoAxesSubplot._store_range = _store_range
 GeoAxesSubplot._get_extends = _get_extend
 GeoAxesSubplot.squiver = _quiver
 xr.DataArray.splot = _xr_splot
+mpl.axes.Axes.sig_plot = _sig_ctrf1
