@@ -225,6 +225,34 @@ def _contourf(self, *args, **kwargs):
     m = self.contourf(*args, **kwargs)
     return m
 
+def _contourf1(self, *args, **kwargs):
+    """ new contourf for GeoAxesSubplot
+
+    Returns:
+        mpl.contour.QuadContourSet
+    """
+    levels1 = kwargs.get("levels")
+    extend = kwargs.get("extend")
+    if extend is None:
+        extend = "both"
+        kwargs["extend"] = extend
+    percentile, num_level, zero_sym = _get_extra_param(kwargs)
+    Z, levels0, x, y = _anal_args(args)
+    # self._store_range(x, y)
+    if levels0 is None and levels1 is None:
+        levels = get_levels(Z, percentile, num_level, zero_sym)
+        kwargs['levels'] = levels
+    cmap = kwargs.get("cmap")
+    if cmap is None:
+        cmap = "RdBu_r"
+        kwargs["cmap"] = cmap
+    # transform = kwargs.get("transform")
+    # if transform is None:
+        # transform = ccrs.PlateCarree()
+        # kwargs["transform"] = transform
+    m = self.contourf(*args, **kwargs)
+    return m
+
 
 def _draw_ticks(self, extend, stepx=None, stepy=None, smallx=None, smally=None, bigx=None, bigy=None):
     """ draw map ticks
@@ -318,6 +346,9 @@ def _sig_ctrf(self, x, y, pvalue, thrshd=0.05, marker="..", color=None):
         thrshd (float, optional): threshold of pvalue. Defaults to 0.05.
         marker (str, optional): mark of Significance test dot. Defaults to "..".
     """
+    # if not isinstance(args[0], (mpl.contour.QuadContourSet)):
+    #     Z, levels0, x, y = _anal_args(args)
+    self._store_range(x, y)
     res = self.contourf(x,
                         y,
                         pvalue,
@@ -436,3 +467,4 @@ GeoAxesSubplot._get_extends = _get_extend
 GeoAxesSubplot.squiver = _quiver
 xr.DataArray.splot = _xr_splot
 mpl.axes.Axes.sig_plot = _sig_ctrf1
+mpl.axes.Axes.scontourf = _contourf1

@@ -1,7 +1,7 @@
 import numpy as np
 import scipy.stats as sts
 
-EPS = 1e-5
+EPS = 1e-10
 
 
 def linear_reg(x: np.ndarray, y: np.ndarray):
@@ -36,9 +36,9 @@ def linear_reg(x: np.ndarray, y: np.ndarray):
     # cal covariance
     covar = ya.T @ xa / Num0
     # cal corr
-    corr = covar / y_std / x_std
+    corr = covar / (y_std + EPS) / (x_std + EPS)
     # cal slope
-    slope = corr * y_std / x_std
+    slope = corr * y_std / (x_std + EPS)
     # cal intcpt
     intcpt = y_rs.mean(axis=0) - slope * x.mean(axis=0)
     # cal t-valpue
