@@ -4,7 +4,12 @@ import xarray as xr
 from .LinReg import LinReg
 import time
 from time import gmtime, strftime
-import dask.array as dsa
+
+
+try:
+    import dask.array as dsa
+except:
+    pass
 
 EPS = 1e-5
 

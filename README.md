@@ -1,6 +1,6 @@
 # SACPY -- A Python Package for Statistical Analysis of Climate
 
-**Sacpy**, an effecient Statistical Analysis tool for Climate or Meteorology data.
+**Sacpy**, an effecient Statistical Analysis tool for Climate and Meteorology data.
 
 Author : Zilu Meng 
 

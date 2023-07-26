@@ -127,7 +127,7 @@ def _get_extra_param(kwargs):
 
 
 def _anal_args(args, clas="contourf"):
-    print(args)
+    # print(args)
     """ analysis args for draw function
 
     Args:

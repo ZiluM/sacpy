@@ -70,12 +70,6 @@ class LinReg:
         self.slope1, self.intcpt1, self.corr1 = masked
         self.masked = True
 
-    # def _repr_html_(self):
-    #     """
-    #     show in jupyter
-    #     """
-    #     from .repr_html import res_repr_html
-    #     return (res_repr_html(self))
 
     def __repr__(self) -> str:
         res = f"{self.name}, x.shape = {self.x.shape}, y.shape = {self.y.shape} "
@@ -83,17 +77,19 @@ class LinReg:
 
     __str__ = __repr__
 
+
 class SpaceCorr():
     name = "Space Correlation"
-    def __init__(self,x,y) -> None:
-        num = x.shape[0]
-        x0 = x.reshape((x.shape[0], -1)).T
-        y0 = y.reshape((y.shape[0], -1)).T
-        # corr = 1 - cdist(x, y, "correlation")
-        covar = x0.T @ y0 / (num-1)
-        corr = covar / y0.std(axis=1) / x0.std(axis=1)
-        self.corr = corr
 
+    def __init__(self, x, y) -> None:
+        num = x.shape[0]
+        self.origin_shape = x.shape
+        x0 = x.reshape((num, -1)).T
+        y0 = y.reshape((num, -1)).T
+        # corr = 1 - cdist(x, y, "correlation")
+        covar = x0.T @ y0 / (num - 1)
+        corr = covar / y0.std(axis=1) / x0.std(axis=1)
+        self.corr = corr.reshape(self.origin_shape)
 
 
 class M2mLinReg():
@@ -109,10 +105,7 @@ class M2mLinReg():
             self.corr: [n_factor, m_factor]
             self.p_value [n_factor, m_factor]
         """
-        # if isinstance(x, xr.DataArray):
-        #     x = np.array(x)
-        # if isinstance(y, xr.DataArray):
-        #     y = np.array(y)
+
         x, xdims, xcoords = _correct_type0(x)
         y, ydims, ycoords = _correct_type0(y)
         if x.shape[0] != y.shape[0]:
@@ -129,12 +122,6 @@ class M2mLinReg():
         p_value[pv_cp < 0.5] = (p_value[pv_cp < 0.5]) * 2
         self.p_value = p_value
 
-    # def _repr_html_(self):
-    #     """
-    #     show in jupyter
-    #     """
-    #     from .repr_html import res_repr_html
-    #     return (res_repr_html(self))
 
 
 class MultLinReg:
