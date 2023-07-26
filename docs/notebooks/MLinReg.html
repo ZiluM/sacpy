@@ -353,6 +353,7 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Sacpy.MultLinReg">Sacpy.MultLinReg</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Math-Euqation">Math Euqation</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#parameter:">parameter:</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Note:">Note:</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Attribute:">Attribute:</a></li>
 </ul>
 </li>
@@ -379,14 +380,7 @@ document.write(`
 <h2>Sacpy.MultLinReg<a class="headerlink" href="#Sacpy.MultLinReg" title="Permalink to this heading">#</a></h2>
 <section id="Math-Euqation">
 <h3>Math Euqation<a class="headerlink" href="#Math-Euqation" title="Permalink to this heading">#</a></h3>
-<div class="line-block">
-<div class="line">$$ y[idx] = slope[idx,0] * x[0] + slope[idx, 1] * x[1] + … + intcp[idx]</div>
-</div>
-<p>\</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>{\hat  {slope} }=(X^{T}X)^{{-1}}X^{T}y\
-</pre></div>
-</div>
-<p>$$</p>
+<p>$ y[idx] = slope[idx,0] * x[0] + slope[idx, 1] * x[1] + … + intcp[idx] $</p>
 <p><a class="reference external" href="https://en.wikipedia.org/wiki/Linear_regression">https://en.wikipedia.org/wiki/Linear_regression</a></p>
 </section>
 <section id="parameter:">
@@ -395,6 +389,11 @@ document.write(`
 <li><p>x (np.ndarray): shape = (time, N) ; N is Number of factors</p></li>
 <li><p>y (np.ndarray): shape = (time,*number)</p></li>
 <li><p>cal_sim (Bool,default=True): Whether to call function multi_linreg</p></li>
+</ul>
+</section>
+<section id="Note:">
+<h3>Note:<a class="headerlink" href="#Note:" title="Permalink to this heading">#</a></h3>
+<ul class="simple">
 <li><p>x’s dim0 must equal to y’dim0 !</p></li>
 </ul>
 </section>
@@ -540,6 +539,7 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Sacpy.MultLinReg">Sacpy.MultLinReg</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Math-Euqation">Math Euqation</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#parameter:">parameter:</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Note:">Note:</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Attribute:">Attribute:</a></li>
 </ul>
 </li>

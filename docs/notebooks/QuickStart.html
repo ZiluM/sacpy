@@ -377,6 +377,7 @@ document.write(`
 <span class="o">%</span><span class="k">autoreload</span> 2
 <span class="kn">import</span> <span class="nn">sacpy</span> <span class="k">as</span> <span class="nn">scp</span>
 <span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 </pre></div>
 </div>
 </div>
@@ -394,21 +395,37 @@ document.write(`
 </pre></div>
 </div>
 </div>
-<div class="nbinput nblast docutils container">
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># get Nino3.4 Index</span>
 <span class="n">Nino34</span> <span class="o">=</span> <span class="n">ssta</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span><span class="o">-</span><span class="mi">5</span><span class="p">:</span><span class="mi">5</span><span class="p">,</span><span class="mi">190</span><span class="p">:</span><span class="mi">240</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="s2">&quot;lon&quot;</span><span class="p">,</span><span class="s2">&quot;lat&quot;</span><span class="p">))</span>
-<span class="c1"># Nino34.plot()</span>
+<span class="n">Nino34</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[&lt;matplotlib.lines.Line2D at 0x158238fd0&gt;]
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_QuickStart_5_1.png" src="../_images/notebooks_QuickStart_5_1.png" />
 </div>
 </div>
 </section>
 <section id="Linear-Regression-and-Plot">
 <h2>Linear Regression and Plot<a class="headerlink" href="#Linear-Regression-and-Plot" title="Permalink to this heading">#</a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Linear regression</span>
@@ -416,6 +433,7 @@ document.write(`
 <span class="n">LinReg</span> <span class="o">=</span> <span class="n">scp</span><span class="o">.</span><span class="n">LinReg</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">Nino34</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="n">ssta</span><span class="p">)</span>
 <span class="c1"># plot the regression slope</span>
 <span class="kn">import</span> <span class="nn">sacpy.Map</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">7</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
 <span class="n">m</span><span class="p">,</span><span class="n">ax</span> <span class="o">=</span> <span class="n">LinReg</span><span class="o">.</span><span class="n">slope</span><span class="o">.</span><span class="n">splot</span><span class="p">(</span><span class="n">kw2</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;stepx&quot;</span><span class="p">:</span><span class="mi">50</span><span class="p">})</span>
 <span class="c1"># plot significance test</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">sig_plot</span><span class="p">(</span><span class="n">ssta</span><span class="o">.</span><span class="n">lon</span><span class="p">,</span><span class="n">ssta</span><span class="o">.</span><span class="n">lat</span><span class="p">,</span><span class="n">LinReg</span><span class="o">.</span><span class="n">p_value</span><span class="p">,</span><span class="n">thrshd</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
@@ -423,12 +441,12 @@ document.write(`
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;cartopy.mpl.contour.GeoContourSet at 0x14208e9a0&gt;
+&lt;cartopy.mpl.contour.GeoContourSet at 0x15a09c640&gt;
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
