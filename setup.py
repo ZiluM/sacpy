@@ -10,7 +10,7 @@ long_des = long_des1 + "\n\n" + long_des2
 
 print(find_packages())
 setup(name="sacpy",
-      version="0.0.19",
+      version="0.0.20",
       url="https://github.com/ZiluM/sacpy",
       description="A repaid Statistical Analysis tool for Climate or Meteorology data.",
       py_modules=["sacpy"],

@@ -3,7 +3,9 @@ try:
     import cartopy.crs as ccrs
     from cartopy.mpl.ticker import LongitudeFormatter, LatitudeFormatter
 except:
-    raise ImportError("Can't import cartopy, please check your envs")
+    Warning ("Can't import cartopy, please check your envs; \
+             Or use 'pip install cartopy' to install cartopy")
+
 from matplotlib.ticker import MultipleLocator
 import numpy as np
 import matplotlib as mpl
@@ -305,7 +307,7 @@ def _draw_ticks(self, extend, stepx=None, stepy=None, smallx=None, smally=None, 
     self.yaxis.set_minor_locator(MultipleLocator(smally))
 
 
-def _initialize_map(self, same_size=True, coastlines=True, **kwargs):
+def _initialize_map(self, same_size=True, coastlines=True,draw_ticks=True, **kwargs):
     """ initial a map
     """
     # draw coastines
@@ -315,7 +317,12 @@ def _initialize_map(self, same_size=True, coastlines=True, **kwargs):
     if same_size:
         self.set_aspect("auto")
     extend = self._get_extends()
-    self.draw_ticks(extend, **kwargs)
+    if draw_ticks:
+        try:
+            self.draw_ticks(extend, **kwargs)
+        except:
+            # raise()
+            Warning("The map projection may not be able to draw ticks. Please change the projection or set draw_ticks = False ")
 
 
 def _contour(self, *args, **kwargs):
@@ -443,6 +450,8 @@ def _quiver(self, *args, **kwargs):
 
 
 def _xr_splot(self, ax=None, label=0, kw1={}, kw2={}):
+    if len(self.dims) != 2:
+        raise ValueError(f"Dataarray should be 2 dims, rather than {self.dims}")
     if label == 0:
         lon = "lon"
         lat = "lat"

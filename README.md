@@ -12,7 +12,7 @@ pypi : https://pypi.org/project/sacpy/
 
 Document: https://zilum.github.io/sacpy/
 
-version : 0.0.19
+version : 0.0.20
 
 ## Why choose Sacpy?
 

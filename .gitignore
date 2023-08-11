@@ -18,6 +18,10 @@
 
 /sacpydoc/
 /examples/EOF.py
+
+/.DS_Store
+
+/.vscode
 # /sacpydoc/docs
 # /sacpydoc/source
 # /sacpydoc/source
