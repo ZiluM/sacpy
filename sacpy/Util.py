@@ -2,10 +2,32 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 import xarray as xr
+import copy
 
 
-def gen_dataarray(data, coords):
-    return xr.DataArray(data=data, coords=coords)
+def gen_dataarray(data, coords,dims):
+    return xr.DataArray(data=data, coords=coords, dims=dims)
+
+def rewapper(data,origin_dataarray,drop_dims=None):
+    coords = copy.deepcopy(origin_dataarray.coords)
+    dims = list(origin_dataarray.coords.dims)
+    if drop_dims is not None:
+        if type(drop_dims) is str:
+            drop_dims = [drop_dims]
+        for dim in drop_dims:
+            del coords[dim]
+            # del coords.dims[dim]
+            dims.remove(dim)
+        # coords.dims = tuple(dims)
+
+    # new_coords = xr.DataArray.coords(coords=coords, dims=dims)
+    
+
+
+    print(coords.dims)
+    
+    return gen_dataarray(data,coords=coords,dims=dims)
+
 
 def convert_lon(lon: np.ndarray):
     """ Convert longitude to the range of [-180, 180] (from xarray)
@@ -58,7 +80,8 @@ def wrap_lon_to_180(da, lon='lon'):
     return da.sortby(lon)
 
 
-def sig_scatter(ax, x: np.ndarray, y: np.ndarray, p: np.ndarray, threshold: float = 0.05, **kwargs):
+def sig_scatter(ax, x: np.ndarray, y: np.ndarray, p: np.ndarray, 
+                threshold: float = 0.05, **kwargs):
     """ significance plot 1D
 
     Args:

@@ -3,8 +3,8 @@ try:
     import cartopy.crs as ccrs
     from cartopy.mpl.ticker import LongitudeFormatter, LatitudeFormatter
 except:
-    Warning ("Can't import cartopy, please check your envs; \
-             Or use 'pip install cartopy' to install cartopy")
+    Warning("Can't import cartopy, please check your envs;"
+            "Or use 'pip install cartopy' to install cartopy")
 
 from matplotlib.ticker import MultipleLocator
 import numpy as np
@@ -228,6 +228,7 @@ def _contourf(self, *args, **kwargs):
     m = self.contourf(*args, **kwargs)
     return m
 
+
 def _contourf1(self, *args, **kwargs):
     """ new contourf for GeoAxesSubplot
 
@@ -251,8 +252,8 @@ def _contourf1(self, *args, **kwargs):
         kwargs["cmap"] = cmap
     # transform = kwargs.get("transform")
     # if transform is None:
-        # transform = ccrs.PlateCarree()
-        # kwargs["transform"] = transform
+    # transform = ccrs.PlateCarree()
+    # kwargs["transform"] = transform
     m = self.contourf(*args, **kwargs)
     return m
 
@@ -307,7 +308,7 @@ def _draw_ticks(self, extend, stepx=None, stepy=None, smallx=None, smally=None, 
     self.yaxis.set_minor_locator(MultipleLocator(smally))
 
 
-def _initialize_map(self, same_size=True, coastlines=True,draw_ticks=True, **kwargs):
+def _initialize_map(self, same_size=True, coastlines=True, draw_ticks=True, **kwargs):
     """ initial a map
     """
     # draw coastines
@@ -322,7 +323,9 @@ def _initialize_map(self, same_size=True, coastlines=True,draw_ticks=True, **kwa
             self.draw_ticks(extend, **kwargs)
         except:
             # raise()
-            Warning("The map projection may not be able to draw ticks. Please change the projection or set draw_ticks = False ")
+            Warning(
+                "The map projection may not be able to draw ticks. Please change the projection or set draw_ticks = False "
+            )
 
 
 def _contour(self, *args, **kwargs):
@@ -383,19 +386,14 @@ def _sig_ctrf1(self, x, y, pvalue, thrshd=0.05, marker="..", color=None):
         thrshd (float, optional): threshold of pvalue. Defaults to 0.05.
         marker (str, optional): mark of Significance test dot. Defaults to "..".
     """
-    res = self.contourf(x,
-                        y,
-                        pvalue,
-                        levels=[0, thrshd, 1],
-                        zorder=1,
-                        hatches=[marker, None],
-                        colors="None")
+    res = self.contourf(x, y, pvalue, levels=[0, thrshd, 1], zorder=1, hatches=[marker, None], colors="None")
     # set color
     if color is not None:
         for collection in res.collections:
             collection.set_linewidth(0.)
             collection.set_edgecolor(color)
     return res
+
 
 def _pcolormesh(self, *args, **kwargs):
     """ new pcolormesh
@@ -449,7 +447,7 @@ def _quiver(self, *args, **kwargs):
     return m
 
 
-def _xr_splot(self, ax=None, label=0, kw1={}, kw2={}):
+def _xr_splot(self, ax=None, label=0,projection=None, kw1={}, kw2={}):
     if len(self.dims) != 2:
         raise ValueError(f"Dataarray should be 2 dims, rather than {self.dims}")
     if label == 0:
@@ -458,8 +456,12 @@ def _xr_splot(self, ax=None, label=0, kw1={}, kw2={}):
     else:
         lon = "longitude"
         lat = "latitude"
+    if projection is None:
+        projection = ccrs.PlateCarree(central_longitude=self[lon].mean().item())
+    else:
+        pass
     if ax is None:
-        ax = plt.axes(projection=ccrs.PlateCarree(central_longitude=self[lon].mean().item()))
+        ax = plt.axes(projection=projection)
     m = ax.scontourf(self[lon], self[lat], self.to_numpy(), **kw1)
     ax.init_map(**kw2)
     plt.colorbar(m)
