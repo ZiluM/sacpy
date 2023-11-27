@@ -273,7 +273,7 @@ def _draw_ticks(self, extend, stepx=None, stepy=None, smallx=None, smally=None, 
     [x1, x2, y1, y2] = extend
     delta_x = (x2 - x1) / intend_ls
     delta_y = (y2 - y1) / intend_ls
-    if stepx is None:
+    if stepx is None: #
         idx = np.argmin(np.abs(delta_x - 7))
         stepx = intend_ls[idx]
     if stepy is None:

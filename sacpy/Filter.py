@@ -7,5 +7,3 @@ import xarray as xr
 under testing
 
 """
-
-

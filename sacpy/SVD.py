@@ -60,7 +60,7 @@ class SVD():
         self._data1_noNan, self._data2_noNan = data1_noNan, data2_noNan
         self.flag1, self.flag2 = flag1, flag2
         # get covariance
-        Covan = data1_noNan.T @ data2_noNan
+        Covan = data1_noNan.T @ data2_noNan 
         # svd solver
         U_matrix, S, V_matrix = np.linalg.svd(Covan)
         # save

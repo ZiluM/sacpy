@@ -5,7 +5,6 @@ from .LinReg import LinReg
 import time
 from time import gmtime, strftime
 
-
 try:
     import dask.array as dsa
 except:
@@ -34,6 +33,7 @@ class EOF:
         else:
             self.data = np.copy(data) * weights
         # original data shape
+        self.weights = weights
         self.origin_shape = data.shape
         # time length
         self.tLen = data.shape[0]
@@ -59,10 +59,10 @@ class EOF:
     # def _mask_extra_data(self,data):
     #     flag = np.isnan(data0).sum(axis=0) == 0
 
-    def solve(self, method="eig",st=False,chunks=(100, 100)):
+    def solve(self, method="eig", st=False, dim_min=10, chunks=None):
         """ solve the EOF
         """
-        if method not in ['eig', 'svd','dask_svd']:
+        if method not in ['eig', 'svd', 'dask_svd']:
             raise ValueError(f"method must be 'eig' or 'svd', not {method}")
         # mask data
         self._mask_nan()
@@ -73,52 +73,51 @@ class EOF:
         # print("Start EOF")
         # ================================= EOF process by SVD===============================
         if st is True:
-            print("=====EOF Start at {}======".format(strftime("%Y-%m-%d %H:%M:%S", gmtime())))
+            print("=====EOF Start at {}======".format(
+                strftime("%Y-%m-%d %H:%M:%S", gmtime())))
         if method == "svd":
             Xor = 1 / np.sqrt(dim0_len - 1) * data_nN
             U, Sigma, VT = np.linalg.svd(Xor)
             e_vector = VT
-            eign = Sigma
+            eign = Sigma**2
             dim_min = np.min([dim0_len, dim1_len])
         # ================================= EOF process end===============================
         elif method == "eig":
-            if dim0_len > dim1_len:  # time > space
-                # print(1)
-                dim_min = dim1_len
-                # get coviance (space_noNan,space_noNan)
-                cov = data_nN.T @ data_nN
-                # get eigenvalues and right eigenvectors
-                eign, e_vector = np.linalg.eig(cov)  # (dim_min) ; (dim_min , dim_min) [i]&[:,i]
-                # trans
-                e_vector = e_vector.T  # [i]&[i,:]
 
-            else:  # space > time
-                # print(2)
-                # get coviance
-                dim_min = dim0_len
-                # get cov, (time,time)
-                cov = data_nN @ data_nN.T
-                # get eigenvalues and right eigenvectors
-                eign, e_vector_s = np.linalg.eig(cov)  # (dim_min) ; (dim_min , dim_min) [i]&[:,i]
-                # trans
-                e_vector = (data_nN.T @ e_vector_s / np.sqrt(np.abs(eign))).T[:dim_min]
+            dim_min = dim1_len
+            # get coviance (space_noNan,space_noNan)
+            cov = data_nN.T @ data_nN / (self.tLen - 1)
+            # get eigenvalues and right eigenvectors
+            eign, e_vector = np.linalg.eig(
+                cov)  # (dim_min) ; (dim_min , dim_min) [i]&[:,i]
+            # trans
+            e_vector = e_vector.T  # [i]&[i,:]
+
         elif method == "dask_svd":
+            if chunks is None:
+                raise ValueError(f"chunks must can't be None")
             Xor = 1 / np.sqrt(dim0_len - 1) * data_nN
             Xor = dsa.from_array(Xor, chunks=chunks)
-            dim_min = np.min([dim0_len, dim1_len])
+            if dim_min is None:
+                dim_min = np.min([dim0_len, dim1_len])
             U, Sigma, V = dsa.linalg.svd_compressed(Xor, k=dim_min)
-            e_vector = np.array(V.compute())
-            eign = np.array(Sigma.compute())
+            U.compute()
+            Sigma.compute()
+            V.compute()
+            e_vector = np.array(V)
+            eign = np.array((Sigma**2).compute())
+
         if st is True:
-            print("=====EOF End at  {}======".format(strftime("%Y-%m-%d %H:%M:%S", gmtime())))
+            print("=====EOF End at  {}======".format(
+                strftime("%Y-%m-%d %H:%M:%S", gmtime())))
         # save
         # print("EOF End")
-        self.e_vector = e_vector
-        self.eign = eign
+        self.e_vector = e_vector.real
+        self.eign = eign.real
         self.dim_min = dim_min
         # get patterns
         patterns = np.zeros((dim_min, *self.rsp_data.shape[1:]))
-        patterns[:, self.flag] = e_vector[:dim_min]
+        patterns[:, self.flag] = self.e_vector[:dim_min]
         # refill Nan
         patterns[:, np.logical_not(self.flag)] = np.NAN
         # patterns = patterns.reshape((dim_min, *self.origin_shape[1:]))
@@ -126,10 +125,30 @@ class EOF:
         self.patterns_num = patterns.shape[0]
         self.patterns = patterns
 
-    def get_eign(self):
+    def get_eign(self, npt=4):
         """ get eign of each pattern
         """
-        return self.eign
+        return self.eign[:npt]
+
+    def north_test(self, npt=10, perc=False):
+        """
+        Args:
+            north test for EOF
+            npt: number of patterns to test
+            perc: return percential or not
+                if perc is True, return percential
+                if perc is False, return typical errors
+        ===============================
+        return: 
+            typical errors of each pattern
+        """
+        num = self.tLen
+        factor = np.sqrt(2 / num)
+        if perc:
+            eign = self.eign[:npt] / np.sum(self.data_nN.var(axis=0))
+        else:
+            eign = self.eign[:npt]
+        return eign * factor
 
     def get_varperc(self, npt=None):
         """ return variance percential
@@ -142,7 +161,9 @@ class EOF:
         """
         if npt is None:
             npt = self.dim_min
-        var_perc = self.eign[:npt] / np.sum(self.eign)
+        var_perc = self.eign[:npt] / np.sum(self.data_nN.var(axis=0))
+        self.data_var = np.sum(self.data_nN.var(axis=0))
+        self.var_perc = var_perc
         return var_perc
 
     def get_pc(self, npt=None, scaling="std"):
@@ -159,6 +180,7 @@ class EOF:
             npt = self.dim_min
         pc = self.e_vector[:npt] @ self.data_nN.T  # (pattern_num, time)
         # self.pc = pc
+        self.pc_scaling = scaling
         self.pc_std = pc[:npt].std(axis=1)[..., np.newaxis]
         if scaling == "std":
             pc_re = pc[:npt] / self.pc_std
@@ -169,7 +191,9 @@ class EOF:
         elif scaling is None:
             pc_re = pc
         else:
-            raise ValueError(f"invalid PC scaling option: '{scaling}', Must be None, 'std','DSE' and 'MSE' ")
+            raise ValueError(
+                f"invalid PC scaling option: '{scaling}', Must be None, 'std','DSE' and 'MSE' "
+            )
         self.pc = pc_re
         self.got_pc_num = npt
         return pc_re
@@ -202,8 +226,7 @@ class EOF:
         return patterns
 
     def correlation_map(self, npt):
-        """ Get correlation map
-
+        """ Get correlation map of each pattern
         Args:
             npt 
 
@@ -220,7 +243,7 @@ class EOF:
         return corr_maps
 
     def projection(self, proj_field: np.ndarray, npt=None, scaling="std"):
-        """ project new field to EOF spatial pattern
+        """ project new field to EOF spatial pattern to get PCs
 
         Args:
             proj_field (np.ndarray): shape (time, *space grid number)
@@ -231,7 +254,8 @@ class EOF:
         """
         if npt is None:
             npt = self.dim_min
-        proj_field_noNan = proj_field.reshape(proj_field.shape[0], -1)[:, self.flag]
+        proj_field_noNan = proj_field.reshape(proj_field.shape[0],
+                                              -1)[:, self.flag]
         pc_proj = self.e_vector @ proj_field_noNan.T
         if self.pc is None or self.got_pc_num < npt:
             self.get_pc(npt)
@@ -242,7 +266,7 @@ class EOF:
     # def decoder(self):
     #     pass
 
-    def load_pt(self,patterns):
+    def load_pt(self, patterns):
         """ load space patterns of extral data rather than from solving
 
         Args:
@@ -251,33 +275,36 @@ class EOF:
         patterns_num = patterns.shape[0]
         self.patterns_num = patterns_num
         self.patterns = patterns
-    
-    def decoder(self,pcs):
-        """
-        
-        project pcs on patterns to get original fields
 
+    def decoder(
+        self,
+        pcs,
+    ):
         """
-        pcs_num = pcs.shape[0]
+        pcs: (*time, pc_num)
+        project pcs on patterns to get original fields
+        """
+        pcs_num = pcs.shape[-1]
+        time_shape = pcs.shape[:-1]
+        pcs_shaped = pcs.reshape((-1, pcs_num)).swapaxes(0, 1)  # pc_num, time
         if pcs_num > self.patterns_num:
-            raise ValueError(f"PC Number is {pcs_num}, larger than PT Number = {self.patterns_num}")
+            raise ValueError(
+                f"PC Number is {pcs_num}, larger than PT Number = {self.patterns_num}"
+            )
         # else:
-        proj_pt = self.patterns[:pcs_num]
+        if self.pc_scaling == "std":
+            # pcs = pcs * self.pc_std
+            proj_pt = self.patterns[:pcs_num] * self.pc_std[:pcs_num]
         # projection use einsum
         # i: pcs_num, j: time
         # k...: *space patterns shape
-        fields = np.einsum('ij,ik...->jk...', pcs, proj_pt)
+        fields = np.einsum('ij,ik...->jk...', pcs_shaped, proj_pt).reshape(
+            (*time_shape, *self.origin_shape[1:]))
+        if self.weights is not None:
+            fields = fields / self.weights
+        # fields
         # fields: time, *space patterns shape
         return fields
-
-
-
-
-
-
-
-        
-
 
     # def pattern_corr(self, data: np.ndarray, npt=None):
     #     """  calculate pattern correlation of extra data and patterns
