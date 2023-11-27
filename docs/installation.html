@@ -439,12 +439,12 @@ which<span class="w"> </span>conda<span class="w">  </span><span class="c1"># sh
 <section id="step-4-install-sacpy">
 <h3>Step 4: Install <cite>Sacpy</cite><a class="headerlink" href="#step-4-install-sacpy" title="Permalink to this heading">#</a></h3>
 <p>Taking a clean installation as example, first let’s create a new environment named <code class="code docutils literal notranslate"><span class="pre">cfr-env</span></code> via <code class="code docutils literal notranslate"><span class="pre">conda</span></code></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>sacpy<span class="w"> </span><span class="nv">python</span><span class="o">=</span><span class="m">3</span>.9
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>sacpy<span class="w"> </span><span class="nv">python</span><span class="o">=</span><span class="m">3</span>.10
 conda<span class="w"> </span>activate<span class="w"> </span>sacpy
 </pre></div>
 </div>
 <p>Then install some dependencies via <code class="code docutils literal notranslate"><span class="pre">conda</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>install<span class="w"> </span>jupyter<span class="w"> </span>notebook<span class="w"> </span>cartopy<span class="w"> </span>xarray<span class="w"> </span>scipy<span class="w"> </span>numpy<span class="w"> </span>pandas<span class="w"> </span>netcdf4
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>install<span class="w"> </span>jupyter<span class="w"> </span>notebook<span class="w"> </span>cartopy<span class="w"> </span>xarray<span class="w"> </span>scipy<span class="w"> </span>numpy<span class="w"> </span>pandas<span class="w"> </span>netcdf4<span class="w"> </span>dask
 </pre></div>
 </div>
 <p>Once the above dependencies have been installed, simply</p>

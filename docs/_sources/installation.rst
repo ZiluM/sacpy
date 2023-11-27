@@ -86,14 +86,14 @@ Taking a clean installation as example, first let's create a new environment nam
 
 .. code-block:: bash
 
-    conda create -n sacpy python=3.9
+    conda create -n sacpy python=3.10
     conda activate sacpy
 
 Then install some dependencies via :code:`conda`:
 
 .. code-block:: bash
 
-    conda install jupyter notebook cartopy xarray scipy numpy pandas netcdf4
+    conda install jupyter notebook cartopy xarray scipy numpy pandas netcdf4 dask
 
 Once the above dependencies have been installed, simply
 
