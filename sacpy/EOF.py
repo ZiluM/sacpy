@@ -34,11 +34,11 @@ class EOF:
             self.data = np.copy(data) * weights
         # original data shape
         self.weights = weights
-        self.origin_shape = data.shape
+        self.origin_shape = self.data.shape
         # time length
-        self.tLen = data.shape[0]
+        self.tLen = self.data.shape[0]
         # reshape (time, space)
-        self.rsp_data = data.reshape(self.tLen, -1)
+        self.rsp_data = self.data.reshape(self.tLen, -1)
         self.pc = None
         self.got_pc_num = 0
 

@@ -197,3 +197,9 @@ class SVD():
         left_var = (pc_left**2).sum(axis=1) / (self._data1_noNan**2).sum()
         right_var = (pc_right**2).sum(axis=1) / (self._data2_noNan**2).sum()
         return left_var, right_var
+    
+
+
+# 
+
+MCA = SVD
