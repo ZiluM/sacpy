@@ -4,7 +4,7 @@ import scipy.stats as sts
 EPS = 1e-10
 
 
-def linear_reg(x: np.ndarray, y: np.ndarray):
+def linear_reg(x: np.ndarray, y: np.ndarray,neff=None):
     """ Simple linear regression y[idx] = slope[idx] * x + intcp[idx]
     Args:
         x (np.ndarray): shape = (time,)
@@ -43,7 +43,10 @@ def linear_reg(x: np.ndarray, y: np.ndarray):
     intcpt = y_rs.mean(axis=0) - slope * x.mean(axis=0)
     # cal t-valpue
     t = corr / (np.sqrt(1 - corr**2) + EPS) * np.sqrt(Num0 - 2)
-    p_value = sts.t.sf(t, df=Num0 - 2)
+    if neff is None:
+        p_value = sts.t.sf(t, df=Num0 - 2)
+    else:
+        p_value = sts.t.sf(t, df=neff)
     # transform t value
     pv_cp = np.copy(p_value)
     p_value[pv_cp >= 0.5] = (1 - p_value[pv_cp >= 0.5]) * 2

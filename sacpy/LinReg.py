@@ -25,7 +25,7 @@ class LinReg:
         p_value (np.ndarray) : T test p value , shape = [*number]
     """
 
-    def __init__(self, x: np.ndarray or xr.DataArray, y: np.ndarray or xr.DataArray):
+    def __init__(self, x: np.ndarray or xr.DataArray, y: np.ndarray or xr.DataArray,neff=None):
         """ Simple linear regression y[idx] = slope[idx] * x + intcp[idx]
 
         Args:
@@ -48,7 +48,7 @@ class LinReg:
         self.x = x
         self.y = y
 
-        slope, intcpt, corr, p_value = linear_reg(x, y)
+        slope, intcpt, corr, p_value = linear_reg(x, y,neff=neff)
 
         # judge dataarray trans
         if ydims is not None and ycoords is not None:
