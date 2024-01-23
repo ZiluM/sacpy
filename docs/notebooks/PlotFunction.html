@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>Plot Function &#8212; Sacpy 0.19 documentation</title>
+    <title>Plot Function &#8212; Sacpy 0.21 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinxdoc.css" />
     <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="MValueTTest.html" title="Mean Value T Test"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Sacpy 0.19 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Sacpy 0.21 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Plot Function</a></li> 
       </ul>
     </div>  
@@ -267,68 +267,31 @@ array([-2.97376192e+01, -2.47813493e+01, -1.98250795e+01, -1.48688096e+01,
             <p class="logo"><a href="../index.html">
               <img class="logo" src="../_static/sacpy.png" alt="Logo"/>
             </a></p>
-  <div>
-    <h3><a href="../index.html">Table of Contents</a></h3>
-    <ul>
-<li><a class="reference internal" href="#">Plot Function</a><ul>
-<li><a class="reference internal" href="#get_levels">get_levels</a><ul>
-<li><a class="reference internal" href="#Parameter">Parameter</a></li>
-<li><a class="reference internal" href="#Returns:">Returns:</a></li>
-<li><a class="reference internal" href="#Example">Example</a></li>
+<h3><a href="../index.html">Table of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="QuickStart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Linreg.html">Linear Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EOF.html">Empirical Orthogonal Function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SVD.html">Maximum Covariance Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../XrTools.html">Tools for xarray</a></li>
+<li class="toctree-l1"><a class="reference internal" href="MValueTTest.html">Mean Value T Test</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Plot Function</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#get_levels">get_levels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#GeoAxesSubplot.scontourf">GeoAxesSubplot.scontourf</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#GeoAxesSubplot.scontour">GeoAxesSubplot.scontour</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#GeoAxesSubplot.sig_plot">GeoAxesSubplot.sig_plot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#GeoAxesSubplot.spcolormesh">GeoAxesSubplot.spcolormesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#GeoAxesSubplot.squive">GeoAxesSubplot.squive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#GeoAxesSubplot.draw_ticks">GeoAxesSubplot.draw_ticks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#GeoAxesSubplot.init_map">GeoAxesSubplot.init_map</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#xr.Dataarray.splot">xr.Dataarray.splot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Plot-Example">Plot Example</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#GeoAxesSubplot.scontourf">GeoAxesSubplot.scontourf</a><ul>
-<li><a class="reference internal" href="#parameter">parameter</a></li>
-<li><a class="reference internal" href="#id2">Returns:</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#GeoAxesSubplot.scontour">GeoAxesSubplot.scontour</a><ul>
-<li><a class="reference internal" href="#id3">parameter</a></li>
-<li><a class="reference internal" href="#id4">Returns:</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#GeoAxesSubplot.sig_plot">GeoAxesSubplot.sig_plot</a><ul>
-<li><a class="reference internal" href="#Parameter:">Parameter:</a></li>
-<li><a class="reference internal" href="#id6">Returns:</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#GeoAxesSubplot.spcolormesh">GeoAxesSubplot.spcolormesh</a><ul>
-<li><a class="reference internal" href="#id7">parameter</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#GeoAxesSubplot.squive">GeoAxesSubplot.squive</a><ul>
-<li><a class="reference internal" href="#id8">parameter</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#GeoAxesSubplot.draw_ticks">GeoAxesSubplot.draw_ticks</a><ul>
-<li><a class="reference internal" href="#id9">Parameter:</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#GeoAxesSubplot.init_map">GeoAxesSubplot.init_map</a><ul>
-<li><a class="reference internal" href="#id10">Parameter</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#xr.Dataarray.splot">xr.Dataarray.splot</a><ul>
-<li><a class="reference internal" href="#id11">Parameter</a></li>
-<li><a class="reference internal" href="#Return">Return</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#Plot-Example">Plot Example</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../usefulexmple.html">Useful Example</a></li>
 </ul>
 
-  </div>
-  <div>
-    <h4>Previous topic</h4>
-    <p class="topless"><a href="MValueTTest.html"
-                          title="previous chapter">Mean Value T Test</a></p>
-  </div>
-  <div>
-    <h4>Next topic</h4>
-    <p class="topless"><a href="../usefulexmple.html"
-                          title="next chapter">Useful Example</a></p>
-  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -362,7 +325,7 @@ array([-2.97376192e+01, -2.47813493e+01, -1.98250795e+01, -1.48688096e+01,
         <li class="right" >
           <a href="MValueTTest.html" title="Mean Value T Test"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Sacpy 0.19 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Sacpy 0.21 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Plot Function</a></li> 
       </ul>
     </div>
