@@ -17,8 +17,9 @@ def autocorr(x):
     acor : float
     """
     xd = (x - np.mean(x)) / np.std(x)
-    acor = np.dot(xd[0:len(xd)-1], xd[1:len(x)]) / (len(xd)-1)  # I am not sure this should be N or N-1; 
+    # I am not sure this should be N or N-1
     # Dennis' code seems to use N-1, but his textbook says N
+    acor = np.dot(xd[0:len(xd)-1], xd[1:len(x)]) / (len(xd)-1)
     return acor
 
 
@@ -52,7 +53,23 @@ def harmonic_func(n, period=365.25, num_fs=4):
 
 
 def prewhiten(x, ac):
-    """Prewhiten a time series `x` with a predetermined autocorrelation factor `ac`."""
+    """
+    Prewhiten a time series `x` with a predetermined autocorrelation 
+    factor `ac`.
+
+    Parameters
+    ----------
+    x : np.ndarray
+        Input timeseries.
+
+    ac : float
+        Autocorrelation coefficient.
+
+    Returns
+    -------
+    x_copy : np.ndarray
+        Whitened timeseries.
+    """
     # Do not wish to modify x in place, so make a copy
     x_copy = x.copy()
     x_copy[1:] -= ac * x_copy[:len(x)-1]
@@ -65,7 +82,22 @@ def red_shape(freq, ac, factor):
 
     Parameters
     ----------
-    TODO
+    freq : np.ndarray
+        Frequency bands.
+
+    ac : float
+        Autocorrelation coefficient.
+
+    factor : float
+        A factor that scales the total variance explained by the
+        power spectrum. This should be 1 if the input timeseries is normalized,
+        i.e., the variance is equal to 1.
+
+    Returns
+    -------
+    rs : np.ndarray
+        The red noise shape profile corresponding to the input frequency bands
+        `f`.
     """
     rs = factor * (1.0 - ac ** 2) / (1. - (2.0 * ac * np.cos(freq * 2.0 * np.pi)) + ac ** 2)
     return rs
@@ -73,7 +105,28 @@ def red_shape(freq, ac, factor):
 
 def get_fcrit(p_crit, dfn, dfd):
     """
-    Simply iterate through to get a critical value for f. Taken from Dennis' code.
+    Get the statistically significant value for f based on `dfn` and `dfd`. 
+    
+    Paramaters
+    ----------
+    p_crit : float
+        p-value for the f statistics.
+
+    dfn : int
+        Degree of freedom for the numerator.
+
+    dfd : int
+        Degree of freedom for the denominator.
+
+        
+    Returns
+    -------
+    f_crit : float
+        Variance ratio required to be statistically significant at `p_crit`.
+
+    Notes
+    -----
+    Taken directly from Dennis' code.
     """
     for n in range(200):
         f = 1. + float(n) / 50.
@@ -85,10 +138,19 @@ def get_fcrit(p_crit, dfn, dfd):
 
 
 def cohstat(dof, siglev):
-    """Coherence significance level. Not ideal as the numbers are hard coded; there must be a more elegant way of doing this."""
-    f99 = [0.99,0.684,0.602,0.536,0.482,0.438,0.401,0.342,0.264,0.215,0.175,0.147,0.112,0.075,0.057,0.045,0.023,0.002]
-    f90 = [0.901,0.437,0.370,0.319,0.280,0.250,0.226,0.189,0.142,0.112,0.091,0.076,0.057,0.038,0.029,0.023,0.011,0.001]
-    f95 = [0.951,0.527,0.450,0.393,0.348,0.312,0.283,0.238,0.181,0.146,0.118,0.098,0.074,0.050,0.037,0.030,0.015,0.001]
+    """Calculate the coherence significance level. 
+    
+    Notes
+    -----
+    Not ideal as the numbers are hard coded. There must be a more elegant way 
+    of doing this.
+    """
+    f99 = [0.99,0.684,0.602,0.536,0.482,0.438,0.401,0.342,0.264,0.215,0.175,
+           0.147,0.112,0.075,0.057,0.045,0.023,0.002]
+    f90 = [0.901,0.437,0.370,0.319,0.280,0.250,0.226,0.189,0.142,0.112,0.091,
+           0.076,0.057,0.038,0.029,0.023,0.011,0.001]
+    f95 = [0.951,0.527,0.450,0.393,0.348,0.312,0.283,0.238,0.181,0.146,0.118,
+           0.098,0.074,0.050,0.037,0.030,0.015,0.001]
     n = [2,5,6,7,8,9,10,12,16,20,25,30,40,60,80,100,200,1000000]
 
     if siglev > 0.95:
@@ -100,12 +162,7 @@ def cohstat(dof, siglev):
 
 
 class Spectral():
-    """TODO
-    
-    Notes
-    -----
-    `CrossSpectral` should be a subclass of `Spectral`.
-    """
+    """The spectral analysis class."""
     def __init__(self, x, M_length, 
                  overlap=0.5,
                  remove_trend=True,
@@ -115,7 +172,34 @@ class Spectral():
         """
         Parameters
         ----------
-        TODO
+        x : np.ndarray
+            Input timeseries.
+
+        M_length : int
+            Input length for WOSA analysis. Should ideally be a power of 2.
+
+        overlap : float
+            The number of overlap samples for each segment utilized in WOSA
+            analysis. Note that if the input data is partitioned by each season,
+            this parameter should be 0. Defaults to 0.5.
+
+        remove_trend : bool
+            Whether to remove the linear trend from the input. Defaults to True.
+
+        remove_annual : bool
+            Whether to remove the annual cycle from the input. Defaults to True.
+
+        normalize_series : bool
+            Whether to normalize the timeseries so that the variance is 1.
+            Defaults to True.
+
+        prewhiten : bool
+            Whether to "prewhiten" the timeseries by removing the
+            autocorrelation from the input data. Defaults to False.
+
+        Returns
+        -------
+        None
 
         Notes
         -----
@@ -123,8 +207,9 @@ class Spectral():
         """
         self.x = x
 
-        self.dfn = 2.0 * len(self.x) / M_length   # DOF of spectrum conservative estimate (abbreviated as the degree of freedom for the numerator, dfn)
-        self.dfd = len(self.x) / 2  # DOF of denominator Null Hypothesis (abbreviated as the degree of freedom for the denominator, dfd)
+        # DOF of spectrum conservative estimate 
+        self.dfn = 2.0 * len(self.x) / M_length   
+        self.dfd = len(self.x) / 2  # DOF of denominator Null Hypothesis 
 
         self.M_length = M_length
         self.overlap = overlap
@@ -150,11 +235,12 @@ class Spectral():
             self.x -= cx.data @ func
     
     def _prewhiten(self):
-        """TODO"""
+        """Prewhiten the timeseries."""
         self.x = prewhiten(self.x)
 
-    def _preprocess_pipeline(self, remove_trend, remove_annual, normalize_series, prewhiten) -> None:
-        """TODO"""
+    def _preprocess_pipeline(self, remove_trend, remove_annual,
+                             normalize_series, prewhiten) -> None:
+        """A series of preprocessing routines to clean the data."""
         if remove_trend:
             self._detrend()
         if remove_annual:
@@ -166,7 +252,7 @@ class Spectral():
 
     def get_spectra(self, normalize_spectrum=True, detrend='linear', **kwargs):
         """
-        Compute spectrum for `x`.
+        Compute the power spectrum for `x`.
 
         Paramaters
         ----------
@@ -174,13 +260,17 @@ class Spectral():
 
         Returns
         -------
-        TODO
+        f, Pxx : np.ndarray, np.ndarray
+            The frequency bands `f` and the explained variance in x for each
+            band `Pxx`.
 
         Notes
         -----
         **kwargs are directly passed into the functional call of `signal.welch`.
         """
-        f, Pxx = signal.welch(self.x, nperseg=self.M_length, noverlap=self.M_length * self.overlap, detrend=detrend, **kwargs)
+        f, Pxx = signal.welch(self.x, nperseg=self.M_length, 
+                              noverlap=self.M_length * self.overlap,
+                              detrend=detrend, **kwargs)
 
         if normalize_spectrum:
             Pxx /= np.mean(Pxx)
@@ -201,7 +291,8 @@ class Spectral():
 
         Returns
         -------
-        TODO
+        rsx : np.ndarray
+            The red noise spectrum.
         """
         # Check if freq exists, if not compute it
         if not hasattr(self, 'f'):
@@ -216,7 +307,8 @@ class Spectral():
             
             self.rsx = red_shape(self.f, a1, a2)
         else:
-            raise ValueError('"method" should be one of "fit_theory" or "fit_data."')
+            raise ValueError('"method" should be one of "fit_theory" or \
+                             "fit_data."')
         
         return self.rsx
     
@@ -250,12 +342,38 @@ class CrossSpectral(Spectral):
         """
         Parameters
         ----------
-        x, y : array-like
+        x, y : np.ndarray
+            Input timeseries.
 
-        TODO
+        M_length : int
+            Input length for WOSA analysis. Should ideally be a power of 2.
+
+        overlap : float
+            The number of overlap samples for each segment utilized in WOSA
+            analysis. Note that if the input data is partitioned by each season,
+            this parameter should be 0. Defaults to 0.5.
+
+        remove_trend : bool
+            Whether to remove the linear trend from the input. Defaults to True.
+
+        remove_annual : bool
+            Whether to remove the annual cycle from the input. Defaults to True.
+
+        normalize_series : bool
+            Whether to normalize the timeseries so that the variance is 1.
+            Defaults to True.
+
+        prewhiten : bool
+            Whether to "prewhiten" the timeseries by removing the
+            autocorrelation from the input data. Defaults to False.
+
+        Returns
+        -------
+        None
         """
         self.y = y
-        super().__init__(x, M_length, overlap, remove_trend, remove_annual, normalize_series, prewhiten)
+        super().__init__(x, M_length, overlap, remove_trend, 
+                         remove_annual, normalize_series, prewhiten)
         self.ac_y = autocorr(self.y)
 
     def _detrend(self):
@@ -279,7 +397,7 @@ class CrossSpectral(Spectral):
             self.y -= cy.data @ func
     
     def _prewhiten(self):
-        """TODO"""
+        """Prewhiten the timeseries."""
         super()._prewhiten()
         self.y = prewhiten(self.y)
     
@@ -293,7 +411,9 @@ class CrossSpectral(Spectral):
 
         Returns
         -------
-        TODO
+        f, Pxx, Pyy : np.ndarray, np.ndarray, np.ndarray
+            The frequency bands `f` and the explained variance in x and y 
+            for each band, namely `Pxx` and `Pyy`.
 
         Notes
         -----
@@ -302,7 +422,9 @@ class CrossSpectral(Spectral):
         # May need to pop nperseg, noverlap, detrend here for robustness?
         # Assumption: f from x spectrum and y spectrum are the same
         super().get_spectra(normalize_spectrum, detrend, **kwargs)
-        _, Pyy = signal.welch(self.y, nperseg=self.M_length, noverlap=self.M_length * self.overlap, detrend=detrend, **kwargs)
+        _, Pyy = signal.welch(self.y, nperseg=self.M_length, 
+                              noverlap=self.M_length * self.overlap,
+                              detrend=detrend, **kwargs)
 
         if normalize_spectrum:
             Pyy /= np.mean(Pyy)
@@ -322,7 +444,8 @@ class CrossSpectral(Spectral):
 
         Returns
         -------
-        TODO
+        rsx, rsy : np.ndarray, np.ndarray
+            The red noise spectrum and `x` and `y`.
         """
         # Check if freq exists, if not compute it
         super().get_red_noise(method=method)
@@ -355,10 +478,12 @@ class CrossSpectral(Spectral):
 
         Returns
         -------
-        covariance, phase, coherence : TODO
+        covariance, phase, coherence : np.ndarray, np.ndarray, np.ndarray
         """
-        _, Pxy = signal.csd(self.x ,self.y, nperseg=self.M_length,detrend=detrend)
-        _, Coh = signal.coherence(self.x, self.y, nperseg=self.M_length,detrend=detrend)
+        _, Pxy = signal.csd(self.x, self.y, nperseg=self.M_length, 
+                            detrend=detrend)
+        _, Coh = signal.coherence(self.x, self.y, nperseg=self.M_length,
+                                  detrend=detrend)
 
         self.covariance = np.real(Pxy)
         self.phase = np.arctan2(np.imag(Pxy), np.real(Pxy)) * 180 / np.pi
@@ -371,7 +496,7 @@ class CrossSpectral(Spectral):
         
         Returns
         -------
-        TODO
+        coh_sig : np.ndarray
         """
         self.coh_sig = cohstat(self.dfn, p_crit)
         return self.coh_sig
