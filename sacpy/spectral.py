@@ -216,7 +216,7 @@ class Spectral():
 
         self._preprocess_pipeline(remove_trend, remove_annual, normalize_series, prewhiten)
 
-        self.ac_x = autocorr(self.x)  # compute the autocorrelation after the preprocess pipeline
+        self.ac_x = autocorr(self.x)
 
     def _detrend(self):
         """Detrend the time series."""
@@ -236,7 +236,8 @@ class Spectral():
     
     def _prewhiten(self):
         """Prewhiten the timeseries."""
-        self.x = prewhiten(self.x)
+        ac_x = autocorr(self.x)
+        self.x = prewhiten(self.x, ac_x)
 
     def _preprocess_pipeline(self, remove_trend, remove_annual,
                              normalize_series, prewhiten) -> None:
@@ -399,7 +400,8 @@ class CrossSpectral(Spectral):
     def _prewhiten(self):
         """Prewhiten the timeseries."""
         super()._prewhiten()
-        self.y = prewhiten(self.y)
+        ac_y = autocorr(self.y)
+        self.y = prewhiten(self.y, ac_y)
     
     def get_spectra(self, normalize_spectrum=True, detrend='linear', **kwargs):
         """
@@ -480,9 +482,11 @@ class CrossSpectral(Spectral):
         -------
         covariance, phase, coherence : np.ndarray, np.ndarray, np.ndarray
         """
-        _, Pxy = signal.csd(self.x, self.y, nperseg=self.M_length, 
+        _, Pxy = signal.csd(self.x, self.y, nperseg=self.M_length,
+                            noverlap=self.M_length * self.overlap,
                             detrend=detrend)
-        _, Coh = signal.coherence(self.x, self.y, nperseg=self.M_length,
+        _, Coh = signal.coherence(self.x, self.y, nperseg=self.M_length, 
+                                  noverlap=self.M_length * self.overlap,
                                   detrend=detrend)
 
         self.covariance = np.real(Pxy)
