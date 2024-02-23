@@ -4,6 +4,8 @@ from scipy.optimize import curve_fit
 import scipy.stats as stats
 
 
+DAYS_IN_YEAR = 365.25
+
 def autocorr(x):
     """
     Find the autocorrelation of a timeseries `x`.
@@ -23,7 +25,7 @@ def autocorr(x):
     return acor
 
 
-def harmonic_func(n, period=365.25, num_fs=4):
+def harmonic_func(n, period=DAYS_IN_YEAR, num_fs=4):
     """
     Construct a harmonic function for regression.
 
@@ -163,7 +165,8 @@ def cohstat(dof, siglev):
 
 class Spectral():
     """The spectral analysis class."""
-    def __init__(self, x, M_length, 
+    def __init__(self, x, M_length,
+                 timestep=1.,
                  overlap=0.5,
                  remove_trend=True,
                  remove_annual=True, 
@@ -177,6 +180,10 @@ class Spectral():
 
         M_length : int
             Input length for WOSA analysis. Should ideally be a power of 2.
+
+        timestep : float
+            The resolution of the data in the number of days. Defaults to 1,
+            suggesting that daily data are used for the spectral analysis.
 
         overlap : float
             The number of overlap samples for each segment utilized in WOSA
@@ -211,6 +218,7 @@ class Spectral():
         self.dfn = 2.0 * len(self.x) / M_length   
         self.dfd = len(self.x) / 2  # DOF of denominator Null Hypothesis 
 
+        self.timestep = timestep
         self.M_length = M_length
         self.overlap = overlap
 
@@ -229,7 +237,7 @@ class Spectral():
     def _remove_annual(self):
         """Remove the annual trend."""
         Nx = len(self.x)
-        func = harmonic_func(len(self.x))
+        func = harmonic_func(len(self.x), period=DAYS_IN_YEAR / self.timestep)
         for _ in range(3):
             cx = func @ self.x / Nx
             self.x -= cx.data @ func
@@ -276,7 +284,7 @@ class Spectral():
         if normalize_spectrum:
             Pxx /= np.mean(Pxx)
 
-        self.f = f
+        self.f = f / self.timestep
         self.Pxx = Pxx
 
         return self.f, self.Pxx
@@ -334,7 +342,8 @@ class CrossSpectral(Spectral):
     """
     Perform a cross spectral analysis on two timeseries `x` and `y`.
     """
-    def __init__(self, x, y, M_length, 
+    def __init__(self, x, y, M_length,
+                 timestep=1.,
                  overlap=0.5,
                  remove_trend=True, 
                  remove_annual=True,
@@ -349,8 +358,12 @@ class CrossSpectral(Spectral):
         M_length : int
             Input length for WOSA analysis. Should ideally be a power of 2.
 
+        timestep : float
+            The resolution of the data in the number of days. Defaults to 1,
+            suggesting that daily data are used for the spectral analysis.
+
         overlap : float
-            The number of overlap samples for each segment utilized in WOSA
+            The fraction of overlap samples for each segment utilized in WOSA
             analysis. Note that if the input data is partitioned by each season,
             this parameter should be 0. Defaults to 0.5.
 
@@ -373,7 +386,7 @@ class CrossSpectral(Spectral):
         None
         """
         self.y = y
-        super().__init__(x, M_length, overlap, remove_trend, 
+        super().__init__(x, M_length, timestep, overlap, remove_trend, 
                          remove_annual, normalize_series, prewhiten)
         self.ac_y = autocorr(self.y)
 
@@ -390,7 +403,7 @@ class CrossSpectral(Spectral):
     def _remove_annual(self):
         """Remove the annual trend."""
         Nx, Ny = len(self.x), len(self.y)
-        func = harmonic_func(len(self.x))
+        func = harmonic_func(len(self.x), DAYS_IN_YEAR / self.timestep)
         for _ in range(3):
             cx = func @ self.x / Nx
             cy = func @ self.y / Ny
