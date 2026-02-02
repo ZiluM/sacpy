@@ -14,6 +14,21 @@ Document: https://zilum.github.io/sacpy/
 
 version : 0.0.20
 
+## Cite our work ##
+
+```
+@inproceedings{meng2023sacpy,
+  title={Sacpy-A Python Package for Statistical Analysis of Climate},
+  author={Meng, Zilu and Zhu, Feng and Hakim, Gregory J},
+  booktitle={Agu fall meeting abstracts},
+  volume={2023},
+  number={1252},
+  pages={PP13D--1252},
+  year={2023}
+}
+
+```
+
 ## Why choose Sacpy?
 
 ### Fast!
